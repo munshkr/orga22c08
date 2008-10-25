@@ -1,0 +1,46 @@
+.:
+total 24K
+drwxr-xr-x 2 4.0K 2008-10-14 20:10 Caso Cabeza Enorme
+drwxr-xr-x 2 4.0K 2008-10-14 20:33 Caso Comprime y no Descomprime
+drwxr-xr-x 2 4.0K 2008-10-14 17:29 Caso cuadradito
+drwxr-xr-x 2 4.0K 2008-10-14 21:31 Caso Cuadrado Enorme
+drwxr-xr-x 2 4.0K 2008-10-14 17:29 Caso Nhouse
+drwxr-xr-x 2 4.0K 2008-10-14 17:29 Caso Suricata Segfault
+-rw-r--r-- 1    0 2008-10-14 21:40 listado.txt
+
+./Caso Cabeza Enorme:
+total 4.1M
+-rw-r--r-- 1 2.0M 2008-10-14 17:00 AITPChiphead-BMP.bmp
+-rw-r--r-- 1 2.0M 2008-10-14 17:01 AITPChiphead-BMP.deflated.bmp
+-rw-r--r-- 1 225K 2008-10-14 17:00 AITPChiphead-BMP.oc2
+
+./Caso Comprime y no Descomprime:
+total 20K
+-rw-r--r-- 1 9.0K 2008-10-14 20:33 comp.oc2
+-rw-r--r-- 1 7.5K 2008-10-14 17:36 low.bmp
+
+./Caso cuadradito:
+total 12K
+-rwxr-xr-x 1 374 2008-10-13 20:10 255_128_0--255_255_255_10x.bmp
+-rw-r--r-- 1 374 2008-10-14 16:53 debug.bmp
+-rw-r--r-- 1 148 2008-10-13 20:12 pepe.oc2
+
+./Caso Cuadrado Enorme:
+total 3.8M
+-rw-r--r-- 1 733K 2008-10-14 21:28 celeste_corrido.bmp
+-rw-r--r-- 1 733K 2008-10-14 21:28 celeste_corrido.deflated.bmp
+-rw-r--r-- 1  81K 2008-10-14 21:28 celeste_corrido.oc2
+-rw-r--r-- 1 733K 2008-10-14 21:13 cuadrado_enorme.bmp
+-rw-r--r-- 1 733K 2008-10-14 21:14 cuadrado_enorme.deflated.bmp
+-rw-r--r-- 1 733K 2008-10-14 21:23 cuadrado_enorme_no_funciona.bmp
+-rw-r--r-- 1  81K 2008-10-14 21:14 cuadrado_enorme.oc2
+
+./Caso Nhouse:
+total 100K
+-rw-r--r-- 1 45K 2008-09-28 16:38 nhouse.bmp
+-rw-r--r-- 1 45K 2008-10-14 16:55 nhousenuestro.bmp
+-rw-r--r-- 1 176 2008-10-14 16:54 nhouse.oc2
+
+./Caso Suricata Segfault:
+total 344K
+-rw-r--r-- 1 339K 2008-09-28 16:38 suricata.bmp

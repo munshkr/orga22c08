@@ -1,0 +1,4 @@
+#! /bin/bash
+./run_bmp2oc2 test.bmp test.oc2
+./run_oc22bmp test.oc2 test.deflated.bmp
+

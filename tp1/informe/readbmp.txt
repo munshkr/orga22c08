@@ -1,0 +1,14 @@
+readbmp: levanta las estructuras del encabezado del archivo .bmp (header e infoHeader)
+y copia los datos de la imagen en un bu?er.
+
+
+Una primera opción para resolver el problema de la validación de un archivo BMP válido fue extraer y leer determinados bytes al comienzo del éste. Como esto ocasionaba problemas a la hora de escribir y leer el código, se decidió declarar dos estructuras bien definidas para almacenar cada componente de los encabezados BMP. 
+
+Como éstas estructuras son constantes (siempre ocupan 54 bytes) y son necesarias para la función writeoc2, se declaran fuera de la función readbmp y son pasados como parámetros a ésta.
+
+Previo a la lectura de los encabezados del archivo, se comprueba que el archivo contenga al menos 54 bytes, siendo éste el tamaño del encabezado de un BMP. Luego, se comprueban los siguientes puntos: 
+	- El archivo comienza con los caracteres "BM".
+	- El tamaño no supera los 50 Mbytes.
+	- El ancho no supera los 1000 pixeles.
+	- Tiene formato Color Real de 24 bits (no tiene paleta).
+Una vez validados, se reserva un buffer de memoria para cargar los datos de la imagen (sin los encabezados).
