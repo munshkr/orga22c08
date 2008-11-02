@@ -81,12 +81,15 @@ int main (int argc, char* argv[]) {
 
 	#ifdef DEBUG
 		k = 0;
+		int j = 0;
 		while (k < 256) {
 			if (tablaApariciones[k] != 0) {
 				printf("Index %d : %d apariciones\n", k, tablaApariciones[k]);
+				j++;
 			}
 			k++;
 		}
+		printf("Simbolos: %d\n",j);
 	#endif
 
 	codificacion* tablaCodigos;
@@ -95,14 +98,23 @@ int main (int argc, char* argv[]) {
 
 
 
-	#ifdef DEBUG
-		printf("sizeCod : %d\n", size_tablaCodigos);
+	//#ifdef DEBUG
 		k = 0;
+		int maxLongCod = 0;
+		unsigned char index = 0;
+		printf("Simbolo\tFrec\tLong\tCodigo\n", size_tablaCodigos);
 		while (k < size_tablaCodigos) {
-			printf("Simbolo %d : %x (%d)\n", tablaCodigos[k].simbolo, tablaCodigos[k].cod, tablaCodigos[k].longCod);
+			char cod[80] = {};
+			dec2bin(tablaCodigos[k].cod, tablaCodigos[k].longCod, cod);
+			index = tablaCodigos[k].simbolo;
+			printf("%d\t%d\t%d\t%s\n", index, tablaApariciones[index], tablaCodigos[k].longCod, cod);
+			
+			if(tablaCodigos[k].longCod>maxLongCod) maxLongCod = tablaCodigos[k].longCod;
 			k++;
 		}
-	#endif
+		printf("Max Longitud Codigo: %d\n", maxLongCod);
+		printf("sizeCod : %d\n", size_tablaCodigos);
+	//#endif
 
 	char* bitstream = NULL;
 	long long int bsLen;

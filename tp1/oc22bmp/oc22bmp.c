@@ -38,8 +38,8 @@ int main (int argc, char* argv[]) {
     }
 
 	char* buffer_bmp = NULL;
-	int size_buffer = decodificar(bitstream, oc2fh.bsSize, tablaCodigos, oc2fh.tcSize, &buffer_bmp, fh.Size - 54);
-
+	int size_buffer = decodificar(bitstream, oc2fh.bsSize, tablaCodigos, (oc2fh.tcSize / 8), &buffer_bmp, fh.Size - 54);
+	//dividimos por 8 el tamaño de la tabla para pasarle el tamaño en FILAS y no en BYTES
 	funciono = writebmp(&fh, &ih, buffer_bmp, size_buffer, archivo_destino);
 
     //free(buffer);

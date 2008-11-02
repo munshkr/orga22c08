@@ -32,6 +32,8 @@ global decodificar
 %define tmpbs [ebp-4]
 %define contador [ebp-8]
 
+%define assert_suma_bits [ebp-12]
+
 %define o_simbolo 0
 %define o_longCod 1
 %define o_cod 4
@@ -40,7 +42,7 @@ global decodificar
 section .text
 
 decodificar:
-	prologue 8
+	prologue 12
 
 	push dword bsLen
 	call malloc
@@ -50,48 +52,48 @@ decodificar:
 	mov [ecx], eax
 	mov tmpbs, eax
 
+mov dword assert_suma_bits, 0
 
 	xor edx, edx
-;	mov ebx, 0x20000000
-	xor ebx, ebx				; uso bh para ver cuantos bits saque de eax
+;								; uso bh para ver cuantos bits saque de eax
 								; uso bl para ver en que indice del tc estoy
 	xor eax, eax				; los 32 primeros bits del buffer
-	xor ecx, ecx				; ecx = bytes por escribir
+	xor ecx, ecx				; ecx = contador de bits sacados de eax
 	xor edi, edi				; edi = tc
 
 	mov ecx, bsLen
 	mov contador, ecx
-	mov ecx, 32					; ecx = contador de bits sacados de eax
+	mov ecx, 32					; para que de entrada cargue los primeros 4 bytes
 	mov edi, tc
 
 ciclo_un_byte_mas:
-	xor esi, esi				; los bh primeros bits del buffer
-	cmp dword contador, 0					; si bytes restantes por escribir es cero, termine
+	xor ebx, ebx
+	xor esi, esi
+	cmp dword contador, 0		; si bytes restantes por escribir es cero, termine
 	je fin_decodificar
 
 ciclo_un_bit_mas:
 
-; 	mov edx, ebx
-; 	shr edx, 16
-; 	cmp edx, 0x2000
 	cmp ecx, 32
-
 	jne puedo_sacar_bit
 
-	mov eax, buffer				; refresco el buffer si se me agoto
-	mov eax, [eax]
+	mov eax, buffer
+	mov eax, [eax]				; cargo el buffer si se me agoto
 	bswap eax					; cambio el endianness
 
-	;and ebx, 0x00001111
-	xor ecx, ecx
+	xor ecx, ecx				; empiezo a contar desde cero la cantidad de bits
 
-	add dword buffer, 4
+	add dword buffer, 4			; incrementamos el puntero al buffer codificado
 
 puedo_sacar_bit:
-	inc bh
+	inc bh						; este es el largo del simbolo, se resetea
 
-	;add ebx, 0x01000000
-	inc ecx
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+cmp bh, 18
+ja assert_long_codigo
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	inc ecx						; lo uso para ver cuando recorri todo eax
 
 	shl esi, 1
 	shl eax, 1
@@ -99,8 +101,9 @@ puedo_sacar_bit:
 
 ciclo_busco_codigo:
 	mov edx, tc_size
+	dec edx
 	cmp bl, dl
-	je pego_la_vuelta
+	je pego_la_vuelta			; termine de recorrer la tabla y no encontre el codigo
 
 	xor edx, edx
 	mov dl, bl
@@ -124,9 +127,10 @@ comparo_longitud:
 
 pego_la_vuelta:
 	mov bl, 0
-	jmp ciclo_un_bit_mas
+	jmp ciclo_un_bit_mas	; vuelvo a recorrer la tabla con un bit más
 
 meto_byte:
+	add assert_suma_bits, bh
 	xor edx, edx
 	mov dl, bl
 	mov edx, [edi + edx * tc_row_size + o_simbolo]
@@ -137,18 +141,17 @@ meto_byte:
 	inc dword tmpbs
 	dec dword contador
 
-	xor ebx, ebx
-	;and ebx, 0x11110000
-
 	jmp ciclo_un_byte_mas
 
 fin_decodificar:
 
 	mov eax, bsLen
 
-	prelude 8
+	prelude 12
 	ret
 
 
-
-
+assert_long_codigo:
+	xor eax, eax;
+	prelude 12
+	ret

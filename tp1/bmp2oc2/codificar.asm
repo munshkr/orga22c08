@@ -66,26 +66,27 @@ codificar:
 ciclo_long:
 	xor ebx, ebx
 	mov bl, [esi + o_simbolo]	; ebx = tc[i].simbolo
-	mov eax, [edi + ebx * 4]		; eax = frecuencia de simbolo ebx
+	mov eax, [edi + ebx * 4]	; eax = frecuencia de simbolo ebx
+								; el simbolo es el indice del arreglo de int
 
-	mov bl, [esi + o_longCod]
-	mul bl
+	mov bl, [esi + o_longCod]	
+	mul ebx						; ebx está limpio en los 3 bytes más altos, nunca se tocan
 
 	add size_bitstream_l, eax	; suma_longitud = suma_longitud + (frec(simbolo) * longCod(simbolo))
-	adc dword size_bitstream_h, 0
+	adc size_bitstream_h, edx		; sumo edx por si la multiplicacion excede los 32 bits
 
 	add esi, tc_row_size
 	loop ciclo_long
 
 fin_ciclo_long:
 	mov eax, size_bitstream_l
-	mov edx, size_bitstream_h
+ 	mov edx, size_bitstream_h
 
-	mov ecx, 32
-	div ecx
+	mov ecx, 32					; como mas adelante codificamos y almacenamos de a 4 bytes al buffer,
+	div ecx						; dividimos por 32 para pedir un buffer multiplo de 4 bytes.
 	cmp edx, 0
 	je reservar_memoria_buf_bitstream
-	inc eax
+	inc eax						; si nos queda resto, sumamos 4 bytes mas
 
 reservar_memoria_buf_bitstream:
 	shl eax, 2
@@ -104,9 +105,10 @@ mem_OK:
 	mov ecx, bitstream
 	mov [ecx], eax
 
-	mov ecx, [ecx]
-	mov tmpbs, ecx						; tmpbs = ptr al buffer bitstream
+; 	mov ecx, [ecx]
+; 	mov tmpbs, ecx						; tmpbs = ptr al buffer bitstream
 
+ 	mov tmpbs, eax						; tmpbs = ptr al buffer bitstream el de arriba daba muchas vueltas
 
 	; recorrer el buffer del bmp y buscar el código del simbolo en la tabla de codigos,
 	; ahi obtenemos el codigo y su long
@@ -136,7 +138,7 @@ ciclo_codificacion:
 
 	mov ecx, esi
 	neg ecx
-	add ecx, 32
+	add ecx, 32					; corro hacia la izquierda la cantidad de bits que me faltan para 32
 	shl edi, cl					; corro el codigo a la parte mas significativa del registro
 
 	pop edx
@@ -152,15 +154,14 @@ colocar_bits:
 	je almacenar_ebx_y_limpiar
 
 coloco_bit:
-	cmp esi, 0
+	cmp esi, 0							; en esi tengo la long del codigo. Cuando termine de pasar
+										; el codigo a ebx, esi va a ser cero, y tengo q buscar otro simbolo.
 	je proximo_simbolo
 
 	shl ebx, 1							; hago lugar en ebx para el bit
-	inc edx
+	inc edx								; incremento la cantidad de bits válidos en ebx.
 	shl edi, 1							; tomo un bit del código, me va a quedar en CARRY
 	adc ebx, 0							; sumo el bit de carry a ebx
-	;rcr ebx, 1
-	;inc edx
 	dec esi								; decremento la longitud del codigo pq ya agregue un bit
 	jmp colocar_bits
 
@@ -174,7 +175,7 @@ proximo_simbolo:
 almacenar_ebx_y_limpiar:
 
 	; tengo que almacenar cada byte de ebx en bitstream, teniendo en cuenta de no meter bytes de mas
-	; en el buffer de bitstream. Cuando pase esto, termina ciclo_codificacion directamente (hacer pop edx!).
+	; en el buffer de bitstream.
 	mov eax, tmpbs					; eax = tmpbs
 	;mov eax, [eax]
 
@@ -182,41 +183,9 @@ almacenar_ebx_y_limpiar:
 	mov [eax], ebx
 	add dword tmpbs, 4
 
-; 	push edx
-; 	mov edx, contador_size_buf_bitstream
-;
-; 	mov [eax], bl
-; 	cmp edx, size_buf_bitstream
-; 	je fin_ciclo_codificacion_2
-; 	inc edx
-;
-; 	mov [eax + 1], bh
-; 	cmp edx, size_buf_bitstream
-; 	je fin_ciclo_codificacion_2
-; 	inc edx
-;
-; 	shr ebx, 16
-;
-; 	mov [eax + 2], bl
-; 	cmp edx, size_buf_bitstream
-; 	je fin_ciclo_codificacion_2
-; 	inc edx
-;
-; 	mov [eax + 3], bh
-; 	cmp edx, size_buf_bitstream
-; 	je fin_ciclo_codificacion_2
-; 	inc edx
-;
-; 	mov contador_size_buf_bitstream, edx
-;
-; 	add dword tmpbs, 4
-;
-; 	pop edx
-
 	xor edx, edx
 	xor ebx, ebx
 	jmp colocar_bits
-
 	; --------------
 
 almacenar_ultimos_bits:

@@ -39,4 +39,52 @@ typedef struct _OC2fileheader {
 } OC2fileheader;
 
 
+//
+// accepts a decimal integer and returns a binary coded string
+//
+void dec2bin(long decimal, int longCod, char *binary)
+{
+  int  k = 0, n = 0;
+  int  neg_flag = 0;
+  int  remain;
+  int  old_decimal;  // for test
+  char temp[80];
+
+  int j = 0;
+  while(j<32){
+  	temp[j] = '0';
+  	j++;
+  }
+
+  // take care of negative input
+  if (decimal < 0)
+  {      
+    decimal = -decimal;
+    neg_flag = 1;
+  }
+  do 
+  {
+    old_decimal = decimal;   // for test
+    remain    = decimal % 2;
+    // whittle down the decimal number
+    decimal   = decimal / 2;
+    // this is a test to show the action
+    //printf("%d/2 = %d  remainder = %d\n", old_decimal, decimal, remain);
+    // converts digit 0 or 1 to character '0' or '1'
+    temp[k++] = remain + '0';
+  } while (decimal > 0);
+
+  if (neg_flag)
+    temp[k++] = '-';       // add - sign
+  else
+    temp[k++] = '0';       // space
+
+  // reverse the spelling
+  k = longCod;
+  while (k >= 0)
+    binary[n++] = temp[--k];
+
+  binary[n-1] = 0;         // end with NULL
+}
+
 #endif // __BMP2OC2_H__
