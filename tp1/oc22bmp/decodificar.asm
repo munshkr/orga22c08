@@ -95,8 +95,8 @@ puedo_sacar_bit:
 	inc bh						; este es el largo del simbolo, se resetea
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-cmp bh, 18
-ja assert_long_codigo2
+;cmp bh, 18
+;ja assert_long_codigo2
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 	inc ecx						; lo uso para ver cuando recorri todo eax
@@ -142,8 +142,8 @@ mov dl, bh
 add dword assert_suma_bits, edx
 mov dword assert_last_code, esi
 mov dword assert_last_long, edx
-cmp bh, 7
-jb assert_long_codigo
+;cmp bh, 7
+;jb assert_long_codigo
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 	xor edx, edx
 	mov dl, bl
