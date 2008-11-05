@@ -105,12 +105,11 @@ puedo_sacar_bit:
 	shl eax, 1
 	adc esi, 0					; traigo a esi el nuevo bit
 
-ciclo_busco_codigo:
+	xor edx, edx
 	mov edx, tc_size
 	dec edx
-	cmp bl, dl
-	ja pego_la_vuelta			; termine de recorrer la tabla y no encontre el codigo
-
+	mov bl, dl
+ciclo_busco_codigo:
 	xor edx, edx
 	mov dl, bl
 	lea edx, [edi + edx * tc_row_size + o_cod]
@@ -118,7 +117,9 @@ ciclo_busco_codigo:
 	cmp esi, [edx]
 	je comparo_longitud
 
-	inc bl
+	cmp bl, 0
+	je pego_la_vuelta			; termine de recorrer la tabla y no encontre el codigo
+	dec bl
 	jmp ciclo_busco_codigo
 
 comparo_longitud:
@@ -128,7 +129,7 @@ comparo_longitud:
 	cmp bh, [edx]
 	je meto_byte
 
-	inc bl
+	dec bl
 	jmp ciclo_busco_codigo
 
 pego_la_vuelta:
@@ -137,13 +138,13 @@ pego_la_vuelta:
 
 meto_byte:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-xor edx, edx
-mov dl, bh
-add dword assert_suma_bits, edx
-mov dword assert_last_code, esi
-mov dword assert_last_long, edx
-;cmp bh, 7
-;jb assert_long_codigo
+; xor edx, edx
+; mov dl, bh
+; add dword assert_suma_bits, edx
+; mov dword assert_last_code, esi
+; mov dword assert_last_long, edx
+; cmp bh, 7
+; jb assert_long_codigo
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 	xor edx, edx
 	mov dl, bl
