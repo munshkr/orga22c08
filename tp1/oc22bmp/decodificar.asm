@@ -33,6 +33,8 @@ global decodificar
 %define contador [ebp-8]
 
 %define assert_suma_bits [ebp-12]
+%define assert_last_code [ebp-16]
+%define assert_last_long [ebp-20]
 
 %define o_simbolo 0
 %define o_longCod 1
@@ -42,7 +44,7 @@ global decodificar
 section .text
 
 decodificar:
-	prologue 12
+	prologue 20 ;hay 12 de más
 
 	push dword bsLen
 	call malloc
@@ -52,7 +54,11 @@ decodificar:
 	mov [ecx], eax
 	mov tmpbs, eax
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 mov dword assert_suma_bits, 0
+mov dword assert_last_code, 0
+mov dword assert_last_long, 0
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 	xor edx, edx
 ;								; uso bh para ver cuantos bits saque de eax
@@ -90,7 +96,7 @@ puedo_sacar_bit:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 cmp bh, 18
-ja assert_long_codigo
+ja assert_long_codigo2
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 	inc ecx						; lo uso para ver cuando recorri todo eax
@@ -103,7 +109,7 @@ ciclo_busco_codigo:
 	mov edx, tc_size
 	dec edx
 	cmp bl, dl
-	je pego_la_vuelta			; termine de recorrer la tabla y no encontre el codigo
+	ja pego_la_vuelta			; termine de recorrer la tabla y no encontre el codigo
 
 	xor edx, edx
 	mov dl, bl
@@ -130,7 +136,15 @@ pego_la_vuelta:
 	jmp ciclo_un_bit_mas	; vuelvo a recorrer la tabla con un bit más
 
 meto_byte:
-	add assert_suma_bits, bh
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+xor edx, edx
+mov dl, bh
+add dword assert_suma_bits, edx
+mov dword assert_last_code, esi
+mov dword assert_last_long, edx
+cmp bh, 7
+jb assert_long_codigo
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 	xor edx, edx
 	mov dl, bl
 	mov edx, [edi + edx * tc_row_size + o_simbolo]
@@ -147,11 +161,12 @@ fin_decodificar:
 
 	mov eax, bsLen
 
-	prelude 12
+	prelude 20
 	ret
 
 
+assert_long_codigo2:
 assert_long_codigo:
 	xor eax, eax;
-	prelude 12
+	prelude 20
 	ret

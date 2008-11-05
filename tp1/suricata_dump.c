@@ -58,7 +58,7 @@ int main() {
 	for (i = 0; i<140; i++) {
 		char cod[80] = {};
 		dec2bin(arr[i], cod);
-		printf("%s ", cod);
+		printf("%s", cod);
 		if((i+1)%4 == 0) printf("\n");
 	}
 	printf("\n");
