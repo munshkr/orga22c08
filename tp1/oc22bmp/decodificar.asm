@@ -112,20 +112,21 @@ puedo_sacar_bit:
 ciclo_busco_codigo:
 	xor edx, edx
 	mov dl, bl
-	lea edx, [edi + edx * tc_row_size + o_cod]
+	lea edx, [edi + edx * tc_row_size + o_longCod]
 
 	cmp esi, [edx]
-	je comparo_longitud
+	je comparo_codigo
+	jb pego_la_vuelta
 
 	cmp bl, 0
 	je pego_la_vuelta			; termine de recorrer la tabla y no encontre el codigo
 	dec bl
 	jmp ciclo_busco_codigo
 
-comparo_longitud:
+comparo_codigo:
 	xor edx, edx
 	mov dl, bl
-	lea edx, [edi + edx * tc_row_size + o_longCod]
+	lea edx, [edi + edx * tc_row_size + o_cod]
 	cmp bh, [edx]
 	je meto_byte
 
