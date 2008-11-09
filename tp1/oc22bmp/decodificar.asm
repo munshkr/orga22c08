@@ -129,6 +129,8 @@ comparo_longitud:
 	cmp bh, [edx]
 	je meto_byte
 
+	cmp bl, 0
+	je pego_la_vuelta
 	dec bl
 	jmp ciclo_busco_codigo
 
