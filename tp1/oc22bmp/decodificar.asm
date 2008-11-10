@@ -114,7 +114,7 @@ ciclo_busco_codigo:
 	mov dl, bl
 	lea edx, [edi + edx * tc_row_size + o_longCod]
 
-	cmp esi, [edx]
+	cmp bh, [edx]
 	je comparo_codigo
 	jb pego_la_vuelta
 
@@ -127,7 +127,7 @@ comparo_codigo:
 	xor edx, edx
 	mov dl, bl
 	lea edx, [edi + edx * tc_row_size + o_cod]
-	cmp bh, [edx]
+	cmp esi, [edx]
 	je meto_byte
 
 	cmp bl, 0
