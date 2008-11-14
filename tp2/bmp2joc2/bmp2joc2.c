@@ -2,7 +2,7 @@
 
 #include <stdlib.h>
 #include "readbmp.h"
-//#include "writeoc2.h"
+//#include "writejoc2.h"
 #include "writecbmp.h"
 
 //extern int* calcularApariciones(char* buffer, int size);
@@ -22,7 +22,7 @@
 	for (i=0;i<ancho/8;i++){
 		for (j=0;j<alto/8;j++){
 			r_bloque = dividirEnBloques(RBuffer, i, j);
-
+			...
 		}
 	}
 
@@ -30,7 +30,7 @@
 */
 
 int main (int argc, char* argv[]) {
-	int bOK = 1;
+	bool bOK = true;
 
 	if (argc != 3) {													// si no recibe los 2 parametros, termina.
 		printf("Numero de parametros incorrecto.\n");
@@ -49,19 +49,12 @@ int main (int argc, char* argv[]) {
 	char* GBuffer;														// headers y carga los datos de la
 	char* BBuffer;														// imagen en los buffer de cada canal (RGB).
 
-	bOK = readbmp(archivo_fuente, &fh, &ih, &RBuffer, &GBuffer, &BBuffer)
+	bOK = readbmp(archivo_fuente, &fh, &ih, &RBuffer, &GBuffer, &BBuffer);
 		//writecbmp(archivo_destino, &fh, &ih, RBuffer, GBuffer, BBuffer);
 
-	if (bOK) {
-		if ((ih->Height % 8 == 0) && (ih->Width % 8 == 0)) {
-			printf("Las medidas de la imágen no son múltiplos de 8.\n");
-			bOK = false;
-		}
-	}
-
     if (bOK) {
-    	int bloquesAncho = ih->Width / 8;
-    	int bloquesAlto = ih->Height / 8;
+    	int bloquesAncho = ih.Width / 8;
+    	int bloquesAlto = ih.Height / 8;
 
     	/*
     	NOTA:

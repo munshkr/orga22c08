@@ -1,6 +1,7 @@
 #ifndef __BMP2JOC2_H__
 #define __BMP2JOC2_H__
 
+#define bool int
 #define false 0
 #define true 1
 

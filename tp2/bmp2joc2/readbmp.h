@@ -89,6 +89,11 @@ int readbmp(const char* path, BMPfileheader* fh, BMPinfoheader* ih, char** RBuff
         esValido = false;
     }
 
+	if ( esValido && ((ih->Height % 8 == 0) && (ih->Width % 8 == 0))) {
+		printf("Las medidas de la imágen no son múltiplos de 8.\n");
+		esValido = false;
+	}
+
     if ( esValido ) {
 
 		int bytesPorCanal = ih->Width * ih->Height;
