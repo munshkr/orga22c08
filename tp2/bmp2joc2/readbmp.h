@@ -89,7 +89,7 @@ int readbmp(const char* path, BMPfileheader* fh, BMPinfoheader* ih, char** RBuff
         esValido = false;
     }
 
-	if ( esValido && ((ih->Height % 8 == 0) && (ih->Width % 8 == 0))) {
+	if ( esValido && !((ih->Height % 8 == 0) && (ih->Width % 8 == 0))) {
 		printf("Las medidas de la imágen no son múltiplos de 8.\n");
 		esValido = false;
 	}
@@ -102,6 +102,17 @@ int readbmp(const char* path, BMPfileheader* fh, BMPinfoheader* ih, char** RBuff
 		*GBuffer = malloc(bytesPorCanal);
 		*BBuffer = malloc(bytesPorCanal);
 
+
+
+		int i;
+		for (i = 0; i < bytesPorCanal; i++) {
+			(*RBuffer)[i] = 0;
+			(*GBuffer)[i] = 0;
+			(*BBuffer)[i] = 0;
+		}
+
+
+
         if (*RBuffer == NULL || *GBuffer == NULL || *BBuffer == NULL) {
         	esValido = false;
         } else {
@@ -112,16 +123,32 @@ int readbmp(const char* path, BMPfileheader* fh, BMPinfoheader* ih, char** RBuff
         	int j, k;
         	char* TBuffer = malloc(fileRowSize);
 
+        	int indiceLoco;
+
+        	// cantidad de columnas y filas de matrices 8x8
+        	int cantColumnasM = ih->Width / 8;
+        	int cantFilasM = ih->Height / 8;
+
         	if (TBuffer == NULL) {
         		esValido = false;
         	} else {
 				for (j = 0 ; j < ih->Height ; j++) {
 					fread (TBuffer, 1, fileRowSize, f);
+					bytesMetidos = 0;
 
 					for (k = 0 ; k < validRowSize ; k += 3) {
-						(*BBuffer)[bytesMetidos] = TBuffer[k];
-						(*GBuffer)[bytesMetidos] = TBuffer[k+1];
-						(*RBuffer)[bytesMetidos] = TBuffer[k+2];
+						/*
+							Armamos los buffers no como bits directos del BMP sino como Array de Matrices 8x8
+							Por eso el indiceLoco.
+							Dolió.
+						*/
+
+ 						//indiceLoco = ( ((k/3) / 8) + (j/8 * (ih->Width / 8)) ) * 64  +  ((k/3) % 8)  +  ((j%8) * 8);
+						indiceLoco = ((bytesMetidos / 8) * 64) + ((j % 8)*8) + (bytesMetidos % 8) + (((j / 8) * 64) * ih->Width / 8);
+						//printf("%d \n", indiceLoco);
+						(*BBuffer)[indiceLoco] = TBuffer[k];
+						(*GBuffer)[indiceLoco] = TBuffer[k+1];
+						(*RBuffer)[indiceLoco] = TBuffer[k+2];
 						bytesMetidos++;
 					}
 				}

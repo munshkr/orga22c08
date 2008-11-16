@@ -1,9 +1,13 @@
 // bmp2joc2
 
 #include <stdlib.h>
+
 #include "readbmp.h"
+#include "writecuadradito.h"
+
 //#include "writejoc2.h"
-#include "writecbmp.h"
+//#include "writecbmp.h"
+
 
 //extern int* calcularApariciones(char* buffer, int size);
 //extern int armarTablaCodigos(int* tablaApariciones, codificacion** tablaCodigos);
@@ -45,14 +49,26 @@ int main (int argc, char* argv[]) {
     BMPfileheader fh;													// declara las estructuras de los
     BMPinfoheader ih;													// headers del archivo bmp fuente.
 
-    char* RBuffer;														// abre el archivo bmp, levanto los
-	char* GBuffer;														// headers y carga los datos de la
-	char* BBuffer;														// imagen en los buffer de cada canal (RGB).
+    char* RBuffer = NULL;														// abre el archivo bmp, levanto los
+	char* GBuffer = NULL;														// headers y carga los datos de la
+	char* BBuffer = NULL;														// imagen en los buffer de cada canal (RGB).
 
 	bOK = readbmp(archivo_fuente, &fh, &ih, &RBuffer, &GBuffer, &BBuffer);
-		//writecbmp(archivo_destino, &fh, &ih, RBuffer, GBuffer, BBuffer);
+
 
     if (bOK) {
+    	//writecbmp(archivo_destino, &fh, &ih, RBuffer, GBuffer, BBuffer);
+    	int y;
+    	int x;
+
+    	for (y = 0 ; y < ih.Width / 8 ; y++) {
+    		for (x = 0 ; x < ih.Height / 8 ; x++) {
+    			writecuadradito(archivo_destino, &fh, &ih, RBuffer, GBuffer, BBuffer, x, y);
+    		}
+    	}
+
+    	//writecuadradito(archivo_destino, &fh, &ih, RBuffer, GBuffer, BBuffer, 3, 3);
+
     	int bloquesAncho = ih.Width / 8;
     	int bloquesAlto = ih.Height / 8;
 
@@ -96,10 +112,12 @@ int main (int argc, char* argv[]) {
 
     }
 
-
-	free(RBuffer);
-    free(GBuffer);
-    free(BBuffer);
+	if (RBuffer != NULL)
+		free(RBuffer);
+	if (GBuffer != NULL)
+	    free(GBuffer);
+	if (BBuffer != NULL)
+	    free(BBuffer);
 
 
     return EXIT_SUCCESS;

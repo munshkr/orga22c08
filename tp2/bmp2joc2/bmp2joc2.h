@@ -29,4 +29,10 @@ typedef struct _BMPinfoheader {
 } BMPinfoheader;
 
 
+
+
+
+
+
+
 #endif // __BMP2JOC2_H__

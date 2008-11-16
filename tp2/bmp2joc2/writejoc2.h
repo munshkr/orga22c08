@@ -1,5 +1,5 @@
-#ifndef __WRITEOC2_H__
-#define __WRITEOC2_H__
+#ifndef __WRITEJOC2_H__
+#define __WRITEJOC2_H__
 
 // valores boolean
 #define false 0
@@ -18,7 +18,7 @@ int writeoc2(OC2fileheader* oc2fh, BMPfileheader* fh, BMPinfoheader* ih, codific
 
 	int ok = 0;
 	int esValido = true;
-	
+
 	FILE * f2 = fopen(file_path, "wb");
 
 	// guardo el header del oc2
