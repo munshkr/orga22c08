@@ -58,57 +58,41 @@ int main (int argc, char* argv[]) {
 
     if (bOK) {
     	//writecbmp(archivo_destino, &fh, &ih, RBuffer, GBuffer, BBuffer);
+		/*
+		// ROMPE TOODO EN PEDAZOS
     	int y;
     	int x;
-
     	for (y = 0 ; y < ih.Width / 8 ; y++) {
     		for (x = 0 ; x < ih.Height / 8 ; x++) {
     			writecuadradito(archivo_destino, &fh, &ih, RBuffer, GBuffer, BBuffer, x, y);
     		}
     	}
+  		*/
+    	int cantCols = ih.Width / 8;
 
-    	//writecuadradito(archivo_destino, &fh, &ih, RBuffer, GBuffer, BBuffer, 3, 3);
+    	float DCT[8][8];
+    	generarDCT(DCT);
 
-    	int bloquesAncho = ih.Width / 8;
-    	int bloquesAlto = ih.Height / 8;
+    	printf("DCT :)\n");
+    	int i, j;
+    	for (i = 0 ; i < 8 ; i++) {
+			for (j = 0 ; j < 8 ; j++) {
+				printf("%f\t", DCT[i][j]);
+			}
+			printf("\n");
+		}
+		printf("\n");
 
-    	/*
-    	NOTA:
-    	Extraer las matrices de 8x8 de un buffer del color que sea, es equivalente a ordenar las tríadas de bytes.
+		float bloque_transformado[8][8];
+		short bloque_cuantizado[8][8];
+		short * bloque_codificado = NULL;
 
-    	B = Byte
+		transformar(dividirEnBloques(RBuffer, cantCols, 0, 0), DCT, bloque_transformado);
+   		cuantizar(bloque_transformado, bloque_cuantizado);
 
-		   A	    B		 C		  D		   E		F		 G
-
-1    	BBBBBBBB BBBBBBBB BBBBBBBB BBBBBBBB BBBBBBBB BBBBBBBB BBBBBBBB
-2    	BBBBBBBB BBBBBBBB BBBBBBBB BBBBBBBB BBBBBBBB BBBBBBBB BBBBBBBB
-3    	BBBBBBBB BBBBBBBB BBBBBBBB BBBBBBBB BBBBBBBB BBBBBBBB BBBBBBBB
-4    	BBBBBBBB BBBBBBBB BBBBBBBB BBBBBBBB BBBBBBBB BBBBBBBB BBBBBBBB
-5    	BBBBBBBB BBBBBBBB BBBBBBBB BBBBBBBB BBBBBBBB BBBBBBBB BBBBBBBB
-6    	BBBBBBBB BBBBBBBB BBBBBBBB BBBBBBBB BBBBBBBB BBBBBBBB BBBBBBBB
-7    	BBBBBBBB BBBBBBBB BBBBBBBB BBBBBBBB BBBBBBBB BBBBBBBB BBBBBBBB
-8    	BBBBBBBB BBBBBBBB BBBBBBBB BBBBBBBB BBBBBBBB BBBBBBBB BBBBBBBB
-
-9    	BBBBBBBB BBBBBBBB BBBBBBBB BBBBBBBB BBBBBBBB BBBBBBBB BBBBBBBB
-10    	BBBBBBBB BBBBBBBB BBBBBBBB BBBBBBBB BBBBBBBB BBBBBBBB BBBBBBBB
-11   	BBBBBBBB BBBBBBBB BBBBBBBB BBBBBBBB BBBBBBBB BBBBBBBB BBBBBBBB
-12    	BBBBBBBB BBBBBBBB BBBBBBBB BBBBBBBB BBBBBBBB BBBBBBBB BBBBBBBB
-13    	BBBBBBBB BBBBBBBB BBBBBBBB BBBBBBBB BBBBBBBB BBBBBBBB BBBBBBBB
-14    	BBBBBBBB BBBBBBBB BBBBBBBB BBBBBBBB BBBBBBBB BBBBBBBB BBBBBBBB
-15    	BBBBBBBB BBBBBBBB BBBBBBBB BBBBBBBB BBBBBBBB BBBBBBBB BBBBBBBB
-16    	BBBBBBBB BBBBBBBB BBBBBBBB BBBBBBBB BBBBBBBB BBBBBBBB BBBBBBBB
-
-    	El nuevo orden debería ser
-
-    	A1		A2		A3		A4		A5		A6		A7
-    	A8		B1		B2		B3		B4		B5		B6
-    	B7		B8		C1		C2		..		..		..
-    	..		..		..		..		..		..		..
-
-    	y asi...
-
-    	Tal vez haya algo que podamos hacer para ordenar en el mismo buffer y entonces no tener que pedir memoria.
-    	*/
+		char bloque[8][8];
+   		decuantizar(bloque_cuantizado, bloque_transformado);
+   		antitransformar(bloque_transformado, DCT, bloque);
 
     }
 

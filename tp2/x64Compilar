@@ -6,6 +6,6 @@
 gcc -c -g -m32 bmp2joc2/bmp2joc2.c
 # gcc -c -g -m32 oc22bmp/oc22bmp.c
 
-gcc -g -m32 -multilib -o run_bmp2joc2 bmp2joc2.o # calcularApariciones.o armarTablaCodigos.o codificar.o
+gcc -g -m32 -multilib -o run_bmp2joc2 bmp2joc2.o -lm # calcularApariciones.o armarTablaCodigos.o codificar.o
 # gcc -g -m32 -multilib -o run_oc22bmp oc22bmp.o decodificar.o
 rm *.o
