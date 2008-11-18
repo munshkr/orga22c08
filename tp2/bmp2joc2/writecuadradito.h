@@ -5,6 +5,7 @@
 #include "bmp2joc2.h"
 
 //int writecuadradito(char* file_path, BMPfileheader* fh, BMPinfoheader* ih, char* RBuffer, char* GBuffer, char* BBuffer, int x, int y);
+//		writecuadradito(archivo_destino, &fh, &ih, (char*)bloque, (char*)Gbloque, (char*)Bbloque, 0, 0);
 
 int writecuadradito(char* file_path, BMPfileheader* fh, BMPinfoheader* ih, char* RBuffer, char* GBuffer, char* BBuffer, int x, int y) {
 
@@ -19,7 +20,7 @@ int writecuadradito(char* file_path, BMPfileheader* fh, BMPinfoheader* ih, char*
 
 		f[i] = fopen(file_path, "wb");
 
-		int cantCols = (ih->Width / 8);
+		int cantCols = 1;//(ih->Width / 8); --> lo cambie a las 16:45
 
 		int Size = 246;
 		int SizeImage = 246-54;
@@ -65,13 +66,12 @@ int writecuadradito(char* file_path, BMPfileheader* fh, BMPinfoheader* ih, char*
 		if (!ok) return 0;
 
 		// guardo los datos de la imagen
-		char* TBuffer = malloc(fh->Size - 54);
+		char* TBuffer = malloc(Size - 54);
 
 
-		RBuffer = (char*)dividirEnBloques(RBuffer, cantCols, x, y);
-		GBuffer = (char*)dividirEnBloques(GBuffer, cantCols, x, y);
-		BBuffer = (char*)dividirEnBloques(BBuffer, cantCols, x, y);
-
+// 		RBuffer = (char*)dividirEnBloques(RBuffer, cantCols, x, y);
+// 		GBuffer = (char*)dividirEnBloques(GBuffer, cantCols, x, y);
+// 		BBuffer = (char*)dividirEnBloques(BBuffer, cantCols, x, y);
 
 
 
@@ -80,9 +80,9 @@ int writecuadradito(char* file_path, BMPfileheader* fh, BMPinfoheader* ih, char*
 
 // 		char* TGBuffer = malloc(fh->Size - 54);
 // 		char* TBBuffer = malloc(fh->Size - 54);
-		int fileRowSize = 4 * ((24 * ih->Width + 31) / 32);
-		int validRowSize = ih->Width * 3;
-		int channelRowSize = ih->Width;
+		int fileRowSize = 4 * ((24 * Width + 31) / 32); //si el ancho es 1, por lo menos voy a necesitar 4 bytes, por eso le sumo 31, para correjirlo
+		int validRowSize = Width * 3;
+		int channelRowSize = Width;
 		int bytesMetidos = 0;
 		int j, k;
 
@@ -90,7 +90,7 @@ int writecuadradito(char* file_path, BMPfileheader* fh, BMPinfoheader* ih, char*
 			ok = false;
 			return 0;
 		} else {
-			for (j = 0 ; j < ih->Height ; j++) {
+			for (j = 0 ; j < Height ; j++) {
 				for (k = 0 ; k < channelRowSize ; k++) {
 //					switch (i) {
 //						case 0:
@@ -112,13 +112,14 @@ int writecuadradito(char* file_path, BMPfileheader* fh, BMPinfoheader* ih, char*
 					bytesMetidos += 3;
 				}
 				for (k = 0 ; k < (fileRowSize - validRowSize) ; k++) {
+					return 0;
 					TBuffer[bytesMetidos] = 0;
 					bytesMetidos++;
 				}
 			}
 		}
 
-		ok = fwrite ( TBuffer, (fh->Size - 54), 1, f[i]);
+		ok = fwrite ( TBuffer, (Size - 54), 1, f[i]);
 		if (!ok) return 0;
 
 		fclose(f[i]);

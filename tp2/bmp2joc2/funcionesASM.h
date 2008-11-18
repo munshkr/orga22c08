@@ -5,7 +5,7 @@
 
 // AUXILIARES
 
-	const float Q_MATRIX[8][8] = {
+	const unsigned char Q_MATRIX[8][8] = {
 		{16, 11, 10, 16,  24,  40,  51,  61},
 		{12, 12, 14, 19,  26,  58,  60,  55},
 		{14, 13, 16, 24,  40,  57,  69,  56},
@@ -16,12 +16,12 @@
 		{72, 92, 95, 98, 112, 100, 103,  99}
 	};
 
-	void transponer_char(char matrix[8][8]) {
+	void transponer_char(unsigned char matrix[8][8]) {
 		int i, j;
-		char save;
+		unsigned char save;
 
 		for (i = 0; i < 8; i++) {
-			for (j = 0; j < 8; j++) {
+			for (j = 0; j < i; j++) {
 				save = matrix[i][j];
 				matrix[i][j] = matrix[j][i];
 				matrix[j][i] = save;
@@ -34,7 +34,7 @@
 		float save;
 
 		for (i = 0; i < 8; i++) {
-			for (j = 0; j < 8; j++) {
+			for (j = 0; j < i; j++) {
 				save = matrix[i][j];
 				matrix[i][j] = matrix[j][i];
 				matrix[j][i] = save;
@@ -42,14 +42,16 @@
 		}
 	}
 
-	void mult_matrices_char_float(char a1[8][8], float a2[8][8], float res[8][8]) {
+	void mult_matrices_float_char(float a1[8][8], unsigned char a2[8][8], float res[8][8]) {
 		int i = 0;
 		int j = 0;
 		int k = 0;
 		for(i = 0; i < 8; i++)
-			for( j = 0; j < 8; j++)
+			for( j = 0; j < 8; j++){
+				res[i][j] = 0;
 				for( k = 0; k < 8; k++)
 					res[i][j] +=  a1[i][k] * a2[k][j];
+			}
 	}
 
 	void mult_matrices_float_float(float a1[8][8], float a2[8][8], float res[8][8]) {
@@ -57,21 +59,37 @@
 		int j = 0;
 		int k = 0;
 		for(i = 0; i < 8; i++)
-			for( j = 0; j < 8; j++)
+			for( j = 0; j < 8; j++){
+				res[i][j] = 0;
 				for( k = 0; k < 8; k++)
 					res[i][j] +=  a1[i][k] * a2[k][j];
+		}
 	}
 
+	void mult_matrices_float_float_toChar(float a1[8][8], float a2[8][8], unsigned char res[8][8]) {
+		int i = 0;
+		int j = 0;
+		int k = 0;
+		for(i = 0; i < 8; i++)
+			for( j = 0; j < 8; j++){
+				res[i][j] = 0;
+				for( k = 0; k < 8; k++)
+					res[i][j] +=  a1[i][k] * a2[k][j];
+			}
+	}
 
 
 // FIN AUXILIARES
 
 
-
-
-
-char* dividirEnBloques(char* CBuffer, int cantCols, int x, int y) {
-	return CBuffer + (x * 64) + (y * cantCols * 64);
+void dividirEnBloques(char* CBuffer, int cantCols, unsigned char retBuff[8][8], int x, int y) {
+	 CBuffer = CBuffer + (x * 64) + (y * cantCols * 64);
+		int i,j;
+    	for (i = 0 ; i < 8 ; i++) {
+			for (j = 0 ; j < 8 ; j++) {
+				retBuff[i][j] = (char)(*CBuffer++);
+			}
+		}
 }
 
 void generarDCT(float DCT[8][8]) {
@@ -93,34 +111,37 @@ void generarDCT(float DCT[8][8]) {
 
 // todos los [8][8] representan un puntero
 
-void transformar(char* bloque, float DCT[8][8], float bloque_transformado[8][8]) {
+void transformar(unsigned char bloque[8][8], float DCT[8][8], float bloque_transformado[8][8]) {
 	float bloqueTemp[8][8];
 
 	transponer_char(bloque);
-	mult_matrices_char_float(bloque, DCT, bloqueTemp);
+	mult_matrices_float_char(DCT, bloque, bloqueTemp);
 	transponer_float(DCT);
 	mult_matrices_float_float(bloqueTemp, DCT, bloque_transformado);
 	transponer_float(DCT);
+
+
+// 		printf("Bloque trasp:\n");
+// 		int i,j;
+//     	for (i = 0 ; i < 8 ; i++) {
+// 			for (j = 0 ; j < 8 ; j++) {
+// 				printf("%d\t", bloque[i][j]);
+// 			}
+// 			printf("\n");
+// 		}
+// 		printf("\n");
 }
 
 void cuantizar(float bloque_transformado[8][8], short bloque_cuantizado[8][8]) {
 	int i, j;
-
+	printf("Empieza la cuantizacion: \n");
 	for (i = 0 ; i < 8 ; i++) {
 		for (j = 0 ; j < 8 ; j++) {
 			bloque_cuantizado[i][j] = bloque_transformado[i][j] / Q_MATRIX[i][j];
-
-			// Lo que viene es un redondeo cabeza, maldito c que no sabe redondear
-			// o google que no me lo encuentra (el problema claramente no soy yo)
-			if (bloque_cuantizado[i][j] >= 0) {
-				bloque_cuantizado[i][j] += 0.5;
-			} else {
-				bloque_cuantizado[i][j] -= 0.5;
-			}
-
-			// OJO, LE PUSE CHAR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-				bloque_cuantizado[i][j] = (int)bloque_cuantizado[i][j];
-			// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// 			printf("-------------------\n");
+// 			printf("%f / %d = %f\n", bloque_transformado[i][j] , Q_MATRIX[i][j], resDiv);
+// 			printf("%f / %d = %d\n", bloque_transformado[i][j] , Q_MATRIX[i][j], bloque_cuantizado[i][j]);
+// 			printf("-------------------\n");
 		}
 	}
 }
@@ -165,13 +186,13 @@ void decuantizar(short bloque_cuantizado[8][8], float bloque_transformado[8][8])
 	}
 }
 
-void antitransformar(float bloque_transformado[8][8], float DCT[8][8], char bloque[8][8]) {
+void antitransformar(float bloque_transformado[8][8], float DCT[8][8], unsigned char bloque[8][8]) {
 	float bloqueTemp[8][8];
 
 	transponer_float(DCT);
 	mult_matrices_float_float(DCT, bloque_transformado, bloqueTemp);
 	transponer_float(DCT);
-	mult_matrices_float_float(bloqueTemp, DCT, bloque);
+	mult_matrices_float_float_toChar(bloqueTemp, DCT, bloque);
 	transponer_char(bloque);
 }
 
