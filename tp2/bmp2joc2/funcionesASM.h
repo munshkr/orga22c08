@@ -16,6 +16,34 @@
 		{72, 92, 95, 98, 112, 100, 103,  99}
 	};
 
+
+	/*
+	const unsigned char Q_MATRIX[8][8] = {
+		{1, 1, 1, 1,  1,  1,  1,  1},
+		{1, 1, 1, 1,  1,  1,  1,  1},
+		{1, 1, 1, 1,  1,  1,  1,  1},
+		{1, 1, 1, 1,  1,  1,  1,  1},
+		{1, 1, 1, 1,  1, 1, 1,  1},
+		{1, 1, 1, 1,  1, 1, 1,  1},
+		{1, 1, 1, 1, 1, 1, 1, 1},
+		{1, 1, 1, 1, 1, 1, 1,  1}
+	};
+	*/
+
+
+	/*
+	const unsigned char Q_MATRIX[8][8] = {
+		{17, 18, 24, 47, 99, 99, 99, 99},
+		{18, 21, 26, 66, 99, 99, 99, 99},
+		{24, 26, 56, 99, 99, 99, 99, 99},
+		{47, 66, 99, 99, 99, 99, 99, 99},
+		{99, 99, 99, 99, 99, 99, 99, 99},
+		{99, 99, 99, 99, 99, 99, 99, 99},
+		{99, 99, 99, 99, 99, 99, 99, 99},
+		{99, 99, 99, 99, 99, 99, 99, 99}
+	};
+	*/
+
 	void transponer_char(unsigned char matrix[8][8]) {
 		int i, j;
 		unsigned char save;
@@ -92,6 +120,16 @@ void dividirEnBloques(char* CBuffer, int cantCols, unsigned char retBuff[8][8], 
 		}
 }
 
+void unirBloques(char* CBuffer, int cantCols, unsigned char Cbloque[8][8], int x, int y) {
+	CBuffer = CBuffer + (x * 64) + (y * cantCols * 64);
+	int i,j;
+	for (i = 0 ; i < 8 ; i++) {
+		for (j = 0 ; j < 8 ; j++) {
+			(*CBuffer++) = Cbloque[i][j];
+		}
+	}
+}
+
 void generarDCT(float DCT[8][8]) {
 	int i, j;
 	float ci;
@@ -134,7 +172,7 @@ void transformar(unsigned char bloque[8][8], float DCT[8][8], float bloque_trans
 
 void cuantizar(float bloque_transformado[8][8], short bloque_cuantizado[8][8]) {
 	int i, j;
-	printf("Empieza la cuantizacion: \n");
+	//printf("Empieza la cuantizacion: \n");
 	for (i = 0 ; i < 8 ; i++) {
 		for (j = 0 ; j < 8 ; j++) {
 			bloque_cuantizado[i][j] = bloque_transformado[i][j] / Q_MATRIX[i][j];
