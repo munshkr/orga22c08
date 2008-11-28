@@ -29,6 +29,7 @@ typedef struct _BMPinfoheader {
 } BMPinfoheader;
 
 
+extern void dividirEnBloques(char* CBuffer, int cantCols, unsigned char retBuff[8][8], int x, int y);
 
 
 
