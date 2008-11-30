@@ -13,24 +13,7 @@
 
 global dividirEnBloques
 
-%macro prologue 1
-	push ebp
-	mov ebp, esp
-	sub esp, %1
 
-	push ebx
-	push esi
-	push edi
-%endmacro
-
-%macro prelude 1
-	pop edi
-	pop esi
-	pop ebx
-
-	add esp, %1
-	pop ebp
-%endmacro
 
 
 %define p_cbuffer [ebp+8]
@@ -41,15 +24,22 @@ global dividirEnBloques
 
 
 dividirEnBloques:
-	prologue 0
+
+	push ebp
+	mov ebp, esp
+
+	push ebx
+	push esi
+	push edi
+
 
 	mov ecx, p_cbuffer
 	mov eax, x
-	shl eax, 6
+	times 6 shl eax, 1
 	add ecx, eax
 
 	mov eax, y
-	shl eax, 6
+	times 6 shl eax, 1
 	mov ebx, cantCols
 	mul ebx
 
@@ -58,9 +48,24 @@ dividirEnBloques:
 
 	mov eax, p_bloque
 
-	movq mm0, [ecx]
-	movq qword [eax], mm0
-	emms
+	movdqu xmm0, [ecx]
+	movdqu [eax], xmm0
+	times 16 inc ecx
+	times 16 inc eax
+	movdqu xmm0, [ecx]
+	movdqu [eax], xmm0
+	times 16 inc ecx
+	times 16 inc eax
+	movdqu xmm0, [ecx]
+	movdqu [eax], xmm0
+	times 16 inc ecx
+	times 16 inc eax
+	movdqu xmm0, [ecx]
+	movdqu [eax], xmm0
 
-	prelude 0
+
+	pop edi
+	pop esi
+	pop ebx
+	pop ebp
 	ret

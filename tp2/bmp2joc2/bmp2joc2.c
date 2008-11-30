@@ -78,7 +78,10 @@ int main (int argc, char* argv[]) {
 
 
 		float DCT[8][8];
-    	generarDCT(DCT);
+		generarDCT_C(DCT);
+
+		//generarDCT(DCT);
+
 
 
 //     	printf("DCT :)\n");
@@ -98,20 +101,22 @@ int main (int argc, char* argv[]) {
 		unsigned char Gbloque[8][8];
 		unsigned char Bbloque[8][8];
 
+		int i, j;
+
 		int y;
 		int x;
 		for (y = 0 ; y < cantRows ; y++) {
 			for (x = 0 ; x < cantCols ; x++) {
-				// dividirEnBloquesC(RBuffer, cantCols, Rbloque, x, y);
+// 				dividirEnBloquesC(RBuffer, cantCols, Rbloque, x, y);
 				dividirEnBloques(RBuffer, cantCols, Rbloque, x, y);
-// 				printf("Rbloque pre:\n");
-// 				for (i = 0 ; i < 8 ; i++) {
-// 					for (j = 0 ; j < 8 ; j++) {
-// 						printf("%d\t", Rbloque[i][j]);
-// 					}
-// 					printf("\n");
-// 				}
-// 				printf("\n");
+//  				printf("Rbloque ASM pre:\n");
+//  				for (i = 0 ; i < 8 ; i++) {
+//  					for (j = 0 ; j < 8 ; j++) {
+//  						printf("%d\t", Rbloque[i][j]);
+//  					}
+//  					printf("\n");
+//  				}
+//  				printf("\n");
 
 				transformar(Rbloque, DCT, bloque_transformado);
 				cuantizar(bloque_transformado, bloque_cuantizado);
@@ -144,14 +149,15 @@ int main (int argc, char* argv[]) {
 // 				}
 // 				printf("\n");
 
-				// dividirEnBloquesC(BBuffer, cantCols, Bbloque, x, y);
+// 				dividirEnBloquesC(BBuffer, cantCols, Bbloque, x, y);
 				dividirEnBloques(BBuffer, cantCols, Bbloque, x, y);
 				transformar(Bbloque, DCT, bloque_transformado);
 				cuantizar(bloque_transformado, bloque_cuantizado);
 				decuantizar(bloque_cuantizado, bloque_transformado);
 				antitransformar(bloque_transformado, DCT, Bbloque);
 
-				// dividirEnBloquesC(GBuffer, cantCols, Gbloque, x, y);
+// 				dividirEnBloquesC(GBuffer, cantCols, Gbloque, x, y);
+				dividirEnBloques(GBuffer, cantCols, Gbloque, x, y);
 				transformar(Gbloque, DCT, bloque_transformado);
 				cuantizar(bloque_transformado, bloque_cuantizado);
 				decuantizar(bloque_cuantizado, bloque_transformado);
@@ -173,7 +179,6 @@ int main (int argc, char* argv[]) {
 	    free(GBuffer);
 	if (BBuffer != NULL)
 	    free(BBuffer);
-
 
     return EXIT_SUCCESS;
 }

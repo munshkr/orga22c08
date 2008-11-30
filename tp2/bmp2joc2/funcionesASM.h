@@ -110,16 +110,14 @@
 // FIN AUXILIARES
 
 
-int dividirEnBloquesC(char* CBuffer, int cantCols, unsigned char retBuff[8][8], int x, int y) {
-	int c = (int) CBuffer + (x * 64) + (y * cantCols * 64);
-	 CBuffer = CBuffer + (x * 64) + (y * cantCols * 64);
-		int i,j;
-    	for (i = 0 ; i < 8 ; i++) {
-			for (j = 0 ; j < 8 ; j++) {
-				retBuff[i][j] = (char)(*CBuffer++);
-			}
+void dividirEnBloquesC(char* CBuffer, int cantCols, unsigned char retBuff[8][8], int x, int y) {
+	CBuffer = CBuffer + (x * 64) + (y * cantCols * 64);
+	int i,j;
+	for (i = 0 ; i < 8 ; i++) {
+		for (j = 0 ; j < 8 ; j++) {
+			retBuff[i][j] = (char)(*CBuffer++);
 		}
-	return c;
+	}
 }
 
 void unirBloques(char* CBuffer, int cantCols, unsigned char Cbloque[8][8], int x, int y) {
@@ -132,7 +130,7 @@ void unirBloques(char* CBuffer, int cantCols, unsigned char Cbloque[8][8], int x
 	}
 }
 
-void generarDCT(float DCT[8][8]) {
+void generarDCT_C(float DCT[8][8]) {
 	int i, j;
 	float ci;
 

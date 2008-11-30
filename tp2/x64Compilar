@@ -1,11 +1,9 @@
 #! /bin/bash
-# yasm -felf -gdwarf2 -o calcularApariciones.o bmp2oc2/calcularApariciones.asm
-# yasm -felf -gdwarf2 -o armarTablaCodigos.o bmp2oc2/armarTablaCodigos.asm
-# yasm -felf -gdwarf2 -o codificar.o bmp2oc2/codificar.asm
-# yasm -felf -gdwarf2 -o decodificar.o oc22bmp/decodificar.asm
-gcc -c -g -m32 bmp2joc2/bmp2joc2.c
-# gcc -c -g -m32 oc22bmp/oc22bmp.c
+yasm -felf -gdwarf2 -o dividir.o bmp2joc2/dividir.asm
+yasm -felf -gdwarf2 -o generardct.o bmp2joc2/generardct.asm
 
-gcc -g -m32 -multilib -o run_bmp2joc2 bmp2joc2.o -lm # calcularApariciones.o armarTablaCodigos.o codificar.o
-# gcc -g -m32 -multilib -o run_oc22bmp oc22bmp.o decodificar.o
+gcc -c -g -m32 bmp2joc2/bmp2joc2.c
+
+gcc -g -m32 -multilib -o run_bmp2joc2 bmp2joc2.o dividir.o generardct.o -lm
+
 rm *.o

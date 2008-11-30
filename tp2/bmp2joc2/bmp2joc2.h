@@ -5,6 +5,11 @@
 #define false 0
 #define true 1
 
+
+extern void dividirEnBloques(char* CBuffer, int cantCols, unsigned char retBuff[8][8], int x, int y);
+extern void generarDCT(float DCT[8][8]);
+
+
 typedef struct _BMPfileheader {
     char MagicWord1;  // char "B"
     char MagicWord2;  // char "M"
@@ -27,12 +32,6 @@ typedef struct _BMPinfoheader {
     int ClrUsed;
     int ClrImportant;
 } BMPinfoheader;
-
-
-extern void dividirEnBloques(char* CBuffer, int cantCols, unsigned char retBuff[8][8], int x, int y);
-
-
-
 
 
 
