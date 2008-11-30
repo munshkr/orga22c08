@@ -110,7 +110,7 @@
 // FIN AUXILIARES
 
 
-void dividirEnBloquesC(char* CBuffer, int cantCols, unsigned char retBuff[8][8], int x, int y) {
+void dividirEnBloques_C(char* CBuffer, int cantCols, unsigned char retBuff[8][8], int x, int y) {
 	CBuffer = CBuffer + (x * 64) + (y * cantCols * 64);
 	int i,j;
 	for (i = 0 ; i < 8 ; i++) {
@@ -120,7 +120,7 @@ void dividirEnBloquesC(char* CBuffer, int cantCols, unsigned char retBuff[8][8],
 	}
 }
 
-void unirBloques(char* CBuffer, int cantCols, unsigned char Cbloque[8][8], int x, int y) {
+void unirBloques_C(char* CBuffer, int cantCols, unsigned char Cbloque[8][8], int x, int y) {
 	CBuffer = CBuffer + (x * 64) + (y * cantCols * 64);
 	int i,j;
 	for (i = 0 ; i < 8 ; i++) {

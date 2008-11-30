@@ -107,7 +107,7 @@ int main (int argc, char* argv[]) {
 		int x;
 		for (y = 0 ; y < cantRows ; y++) {
 			for (x = 0 ; x < cantCols ; x++) {
-// 				dividirEnBloquesC(RBuffer, cantCols, Rbloque, x, y);
+// 				dividirEnBloques_C(RBuffer, cantCols, Rbloque, x, y);
 				dividirEnBloques(RBuffer, cantCols, Rbloque, x, y);
 //  				printf("Rbloque ASM pre:\n");
 //  				for (i = 0 ; i < 8 ; i++) {
@@ -149,14 +149,14 @@ int main (int argc, char* argv[]) {
 // 				}
 // 				printf("\n");
 
-// 				dividirEnBloquesC(BBuffer, cantCols, Bbloque, x, y);
+// 				dividirEnBloques_C(BBuffer, cantCols, Bbloque, x, y);
 				dividirEnBloques(BBuffer, cantCols, Bbloque, x, y);
 				transformar(Bbloque, DCT, bloque_transformado);
 				cuantizar(bloque_transformado, bloque_cuantizado);
 				decuantizar(bloque_cuantizado, bloque_transformado);
 				antitransformar(bloque_transformado, DCT, Bbloque);
 
-// 				dividirEnBloquesC(GBuffer, cantCols, Gbloque, x, y);
+// 				dividirEnBloques_C(GBuffer, cantCols, Gbloque, x, y);
 				dividirEnBloques(GBuffer, cantCols, Gbloque, x, y);
 				transformar(Gbloque, DCT, bloque_transformado);
 				cuantizar(bloque_transformado, bloque_cuantizado);
@@ -167,6 +167,9 @@ int main (int argc, char* argv[]) {
 				unirBloques(RBuffer, cantCols, Rbloque, x, y);
 				unirBloques(GBuffer, cantCols, Gbloque, x, y);
 				unirBloques(BBuffer, cantCols, Bbloque, x, y);
+/*				unirBloques_C(RBuffer, cantCols, Rbloque, x, y);
+				unirBloques_C(GBuffer, cantCols, Gbloque, x, y);
+				unirBloques_C(BBuffer, cantCols, Bbloque, x, y);*/
 			}
 		}
 

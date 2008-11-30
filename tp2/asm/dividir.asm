@@ -14,8 +14,6 @@
 global dividirEnBloques
 
 
-
-
 %define p_cbuffer [ebp+8]
 %define cantCols  [ebp+12]
 %define p_bloque  [ebp+16]
@@ -31,7 +29,6 @@ dividirEnBloques:
 	push ebx
 	push esi
 	push edi
-
 
 	mov ecx, p_cbuffer
 	mov eax, x

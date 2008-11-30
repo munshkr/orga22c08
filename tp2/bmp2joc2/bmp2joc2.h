@@ -8,6 +8,7 @@
 
 extern void dividirEnBloques(char* CBuffer, int cantCols, unsigned char retBuff[8][8], int x, int y);
 extern void generarDCT(float DCT[8][8]);
+extern void unirBloques(char* CBuffer, int cantCols, unsigned char Cbloque[8][8], int x, int y);
 
 
 typedef struct _BMPfileheader {
