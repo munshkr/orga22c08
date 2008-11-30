@@ -76,16 +76,12 @@ int main (int argc, char* argv[]) {
 		};
 */
 
+		int i, j;
 
 		float DCT[8][8];
-		generarDCT_C(DCT);
-
-		//generarDCT(DCT);
-
-
+		generarDCT(DCT);
 
 //     	printf("DCT :)\n");
-//     	int i, j;
 //     	for (i = 0 ; i < 8 ; i++) {
 // 			for (j = 0 ; j < 8 ; j++) {
 // 				printf("%f\t", DCT[i][j]);
@@ -101,13 +97,12 @@ int main (int argc, char* argv[]) {
 		unsigned char Gbloque[8][8];
 		unsigned char Bbloque[8][8];
 
-		int i, j;
+
 
 		int y;
 		int x;
 		for (y = 0 ; y < cantRows ; y++) {
 			for (x = 0 ; x < cantCols ; x++) {
-// 				dividirEnBloques_C(RBuffer, cantCols, Rbloque, x, y);
 				dividirEnBloques(RBuffer, cantCols, Rbloque, x, y);
 //  				printf("Rbloque ASM pre:\n");
 //  				for (i = 0 ; i < 8 ; i++) {
@@ -149,27 +144,21 @@ int main (int argc, char* argv[]) {
 // 				}
 // 				printf("\n");
 
-// 				dividirEnBloques_C(BBuffer, cantCols, Bbloque, x, y);
 				dividirEnBloques(BBuffer, cantCols, Bbloque, x, y);
 				transformar(Bbloque, DCT, bloque_transformado);
 				cuantizar(bloque_transformado, bloque_cuantizado);
 				decuantizar(bloque_cuantizado, bloque_transformado);
 				antitransformar(bloque_transformado, DCT, Bbloque);
 
-// 				dividirEnBloques_C(GBuffer, cantCols, Gbloque, x, y);
 				dividirEnBloques(GBuffer, cantCols, Gbloque, x, y);
 				transformar(Gbloque, DCT, bloque_transformado);
 				cuantizar(bloque_transformado, bloque_cuantizado);
 				decuantizar(bloque_cuantizado, bloque_transformado);
 				antitransformar(bloque_transformado, DCT, Gbloque);
 
-				//writecuadradito(archivo_destino, &fh, &ih, (char*)Rbloque, (char*)Gbloque, (char*)Bbloque, x, y);
 				unirBloques(RBuffer, cantCols, Rbloque, x, y);
 				unirBloques(GBuffer, cantCols, Gbloque, x, y);
 				unirBloques(BBuffer, cantCols, Bbloque, x, y);
-/*				unirBloques_C(RBuffer, cantCols, Rbloque, x, y);
-				unirBloques_C(GBuffer, cantCols, Gbloque, x, y);
-				unirBloques_C(BBuffer, cantCols, Bbloque, x, y);*/
 			}
 		}
 

@@ -1,9 +1,10 @@
 #! /bin/bash
 yasm -felf -gdwarf2 -o dividir.o asm/dividir.asm
-yasm -felf -gdwarf2 -o generardct.o asm/generardct.asm
+yasm -felf -gdwarf2 -o gdct.o asm/gdct.asm
+yasm -felf -gdwarf2 -o unir.o asm/unir.asm
 
 gcc -c -g -m32 bmp2joc2/bmp2joc2.c
 
-gcc -g -m32 -multilib -o run_bmp2joc2 -lm bmp2joc2.o dividir.o generardct.o
+gcc -g -m32 -multilib -o run_bmp2joc2 -lm bmp2joc2.o dividir.o gdct.o unir.o
 
 rm *.o
