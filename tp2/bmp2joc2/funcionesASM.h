@@ -5,7 +5,7 @@
 
 // AUXILIARES
 
-	const unsigned char Q_MATRIX[8][8] = {
+	float FQ_MATRIX[8][8] = {
 		{16, 11, 10, 16,  24,  40,  51,  61},
 		{12, 12, 14, 19,  26,  58,  60,  55},
 		{14, 13, 16, 24,  40,  57,  69,  56},
@@ -16,7 +16,16 @@
 		{72, 92, 95, 98, 112, 100, 103,  99}
 	};
 
-
+	unsigned char Q_MATRIX[8][8] = {
+		{16, 11, 10, 16,  24,  40,  51,  61},
+		{12, 12, 14, 19,  26,  58,  60,  55},
+		{14, 13, 16, 24,  40,  57,  69,  56},
+		{14, 17, 22, 29,  51,  87,  80,  62},
+		{18, 22, 37, 56,  68, 109, 103,  77},
+		{24, 35, 55, 64,  81, 104, 113,  92},
+		{49, 64, 78, 87, 103, 121, 120, 101},
+		{72, 92, 95, 98, 112, 100, 103,  99}
+	};
 	/*
 	const unsigned char Q_MATRIX[8][8] = {
 		{1, 1, 1, 1,  1,  1,  1,  1},
@@ -149,7 +158,7 @@ void generarDCT_C(float DCT[8][8]) {
 
 // todos los [8][8] representan un puntero
 
-void transformar(unsigned char bloque[8][8], float DCT[8][8], float bloque_transformado[8][8]) {
+void transformar_C(unsigned char bloque[8][8], float DCT[8][8], float bloque_transformado[8][8]) {
 	float bloqueTemp[8][8];
 
 	transponer_char(bloque);
@@ -170,7 +179,7 @@ void transformar(unsigned char bloque[8][8], float DCT[8][8], float bloque_trans
 // 		printf("\n");
 }
 
-void cuantizar(float bloque_transformado[8][8], short bloque_cuantizado[8][8]) {
+void cuantizar_C(float bloque_transformado[8][8], short bloque_cuantizado[8][8]) {
 	int i, j;
 	//printf("Empieza la cuantizacion: \n");
 	for (i = 0 ; i < 8 ; i++) {

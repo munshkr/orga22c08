@@ -97,7 +97,7 @@ int main (int argc, char* argv[]) {
 		unsigned char Gbloque[8][8];
 		unsigned char Bbloque[8][8];
 
-
+		float MTemp[8][8];
 
 		int y;
 		int x;
@@ -113,8 +113,8 @@ int main (int argc, char* argv[]) {
 //  				}
 //  				printf("\n");
 
-				transformar(Rbloque, DCT, bloque_transformado);
-				cuantizar(bloque_transformado, bloque_cuantizado);
+				transformar(Rbloque, DCT, bloque_transformado, MTemp);
+				cuantizar(bloque_transformado, FQ_MATRIX, bloque_cuantizado);
 // 				printf("Rbloque cuantizado:\n");
 // 				for (i = 0 ; i < 8 ; i++) {
 // 					for (j = 0 ; j < 8 ; j++) {
@@ -145,14 +145,14 @@ int main (int argc, char* argv[]) {
 // 				printf("\n");
 
 				dividirEnBloques(BBuffer, cantCols, Bbloque, x, y);
-				transformar(Bbloque, DCT, bloque_transformado);
-				cuantizar(bloque_transformado, bloque_cuantizado);
+				transformar(Bbloque, DCT, bloque_transformado, MTemp);
+				cuantizar(bloque_transformado, FQ_MATRIX, bloque_cuantizado);
 				decuantizar(bloque_cuantizado, bloque_transformado);
 				antitransformar(bloque_transformado, DCT, Bbloque);
 
 				dividirEnBloques(GBuffer, cantCols, Gbloque, x, y);
-				transformar(Gbloque, DCT, bloque_transformado);
-				cuantizar(bloque_transformado, bloque_cuantizado);
+				transformar(Gbloque, DCT, bloque_transformado, MTemp);
+				cuantizar(bloque_transformado, FQ_MATRIX, bloque_cuantizado);
 				decuantizar(bloque_cuantizado, bloque_transformado);
 				antitransformar(bloque_transformado, DCT, Gbloque);
 
