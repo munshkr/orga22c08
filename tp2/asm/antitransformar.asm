@@ -1,144 +1,145 @@
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;; TRA SPONER ;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; void antitransformar(float bloque_transformado[8][8], float DCT_trasp[8][8], char bloque[8][8], float temp[8][8]);
 
-	%macro tra_step 0
-		movss xmm4, xmm0
-		pslldq xmm4, 4
-		psrldq xmm0, 4
-		movss xmm5, xmm0
-		pslldq xmm5, 4
-		psrldq xmm0, 4
-		movss xmm6, xmm0
-		pslldq xmm6, 4
-		psrldq xmm0, 4
-		movss xmm7, xmm0
-		pslldq xmm7, 4
+global antitransformar
+extern trasponer
 
-		movss xmm4, xmm1
-		pslldq xmm4, 4
-		psrldq xmm1, 4
-		movss xmm5, xmm1
-		pslldq xmm5, 4
-		psrldq xmm1, 4
-		movss xmm6, xmm1
-		pslldq xmm6, 4
-		psrldq xmm1, 4
-		movss xmm7, xmm1
-		pslldq xmm7, 4
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;; MUL TIPLICAR ;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-		movss xmm4, xmm2
-		pslldq xmm4, 4
-		psrldq xmm2, 4
-		movss xmm5, xmm2
-		pslldq xmm5, 4
-		psrldq xmm2, 4
-		movss xmm6, xmm2
-		pslldq xmm6, 4
-		psrldq xmm2, 4
-		movss xmm7, xmm2
-		pslldq xmm7, 4
+%macro pohrmonheioh2 3	;%1 ~ %2 = %3    (REGISTROS)	;la escribimos asi porque es soft
+	mov esi, %1
+	mov edi, %2
+	mov ecx, %3
 
-		movss xmm4, xmm3
-		psrldq xmm3, 4
-		movss xmm5, xmm3
-		psrldq xmm3, 4
-		movss xmm6, xmm3
-		psrldq xmm3, 4
-		movss xmm7, xmm3
+	xor edx, edx
+	times 4 inc edx
+	times 2 shl edx, 1 									;lo escribimos asi porque 1 es constante para el opcode
 
-		shufps xmm4, xmm4, 00011011b
-		shufps xmm5, xmm5, 00011011b
-		shufps xmm6, xmm6, 00011011b
-		shufps xmm7, xmm7, 00011011b
-	%endmacro
+	xor eax, eax
+	xor ebx, ebx
 
-	%macro tra_tomar 0
-		movups xmm0, [ebx]
-		add ebx, eax
-		movups xmm1, [ebx]
-		add ebx, eax
-		movups xmm2, [ebx]
-		add ebx, eax
-		movups xmm3, [ebx]
-	%endmacro
+.ciclo_i:
+	movups xmm0, [esi]
+	add esi, edx
+	movups xmm1, [esi]
+	add esi, edx
+.ciclo_j:
+	movups xmm2, [edi]
+	add edi, edx
+	movups xmm3, [edi]
+	add edi, edx
 
-	%macro tra_almacenar 0
-		movups [ebx], xmm4
-		add ebx, eax
-		movups [ebx], xmm5
-		add ebx, eax
-		movups [ebx], xmm6
-		add ebx, eax
-		movups [ebx], xmm7
-	%endmacro
+	mulps xmm2, xmm0
+	mulps xmm3, xmm1
+	addps xmm3, xmm2
+	movups xmm2, xmm3
+	movhlps xmm2, xmm2
+	addps xmm3, xmm2
+	movups xmm2, xmm3
+	psrldq xmm2, 4
+	addss xmm3, xmm2
+
+	inc ebx
+	cmp ebx, 4
+	ja .uso_5
+
+	pslldq xmm4, 4
+	movss xmm4, xmm3
+	jmp .sigo
+.uso_5:
+	pslldq xmm5, 4
+	movss xmm5, xmm3
+.sigo:
+	cmp ebx, 8
+	jb .ciclo_j
+
+.fin_ciclo_j:
+	shufps xmm4, xmm4, 00011011b
+	movups [ecx], xmm4
+	add ecx, edx
+	shufps xmm5, xmm5, 00011011b
+	movups [ecx], xmm5
+	add ecx, edx
+
+	times 16 sub edi, edx
+
+	xor ebx, ebx
+	inc eax
+	cmp eax, 8
+	jb .ciclo_i
+
+%endmacro
 
 
-	%macro float_trasponer 1
-		mov esi, %1
-		xor eax, eax
-		times 8 inc eax
-		times 2 shl eax, 1
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;; FLO ATTOCHAR ;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-	; Tomo 1er Cuadrante
-		mov ebx, esi
-		tra_tomar
+%macro float_to_char 2		;%2 = float_to_char(%1)
+	
+; TO-DO!
 
-	; Traspongo
-		tra_step
+; 		mov esi, %1
+; 		mov edi, %2
+; 
+; 		pxor mm0, mm0
+; 		mov ecx, 16
+; 
+; 	.ciclo:
+; 		movd mm1, [esi]
+; 		punpcklbw mm1, mm0
+; 
+; 		movq mm2, mm1
+; 		punpcklwd mm1, mm0
+; 		punpckhwd mm2, mm0
+; 
+; 		cvtpi2ps xmm0, mm2
+; 		movlhps xmm0, xmm0
+; 		cvtpi2ps xmm0, mm1
+; 
+; 		movdqu [edi], xmm0
+; 
+; 		times 4 inc esi
+; 		times 16 inc edi
+; 		loop .ciclo
+; 
+; 		emms
+%endmacro
 
-	; Almaceno en 1er Cuadrante
-		mov ebx, esi
-		tra_almacenar
 
-	; Preparo puntero al 2do Cuadrante
-		mov ebx, esi
-		xor edx, edx
-		times 4 inc edx
-		times 2 shl edx, 1
-		add ebx, edx
 
-	; Tomo 2do Cuadrante
-		tra_tomar
+%define p_bloque_in [ebp+8]
+%define p_dct [ebp+12]
+%define p_bloque_out [ebp+16]
+%define p_MTemp [ebp+20]
 
-	; Traspongo
-		tra_step
-
-	; Preparo puntero al 3er Cuadrante
-		add ebx, edx
-
-	; Tomo 3er Cuadrante
-		tra_tomar
-
-	; Almaceno 2do en 3er Cuadrante
-		times 3 sub ebx, eax
-		tra_almacenar
-
-	; Traspongo
-		tra_step
-
-	; Preparo puntero al 2do Cuadrante
-		mov ebx, esi
-		add ebx, edx
-
-	; Almaceno
-		tra_almacenar
-
-	; Preparo puntero al 4to Cuadrante
-		add ebx, eax
-
-	; Tomo 4to Cuadrante
-		tra_tomar
-
-	; Traspongo
-		tra_step
-
-	; Almaceno 4to Cuadrante
-		times 3 sub ebx, eax
-		tra_almacenar
-
-	%endmacro
-
-;|||||||||||||||||||||||||||||
-;|||||||| TRA SPONER |||||||||
-;|||||||||||||||||||||||||||||
+antitransformar:
+	push ebp
+	mov ebp, esp
+	push ebx
+	push esi
+	push edi
+	
+	mov eax, p_bloque_in
+	push esi
+	call trasponer
+	add esp, 4
+	
+pri_mult2:
+	pohrmonheioh2 p_dct, p_bloque_in, p_MTemp
+seg_mult2:
+	pohrmonheioh2 p_MTemp, p_dct, p_MTemp
+	
+	mov eax, p_MTemp
+	push eax
+	call trasponer
+	add esp, 4
+	
+	float_to_char p_MTemp, p_bloque_out
+	
+	pop edi
+	pop esi
+	pop ebx
+	pop ebp
+	ret

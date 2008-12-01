@@ -11,10 +11,10 @@
 
 
 int main (int argc, char* argv[]) {
-	bool bOK = true;
-
-	if (argc < 3) {													// si no recibe los 2 parametros, termina.
-		printf("Numero de parametros incorrecto.\n");
+	
+	 // si no recibe los 2 parametros, termina.
+	if (argc < 3) {													
+		printf("Número de parámetros incorrecto.\n");
 		printf("Uso:  bmp2joc2 FUENTE DESTINO\n");
         printf("\n");
         return EXIT_FAILURE;
@@ -23,30 +23,24 @@ int main (int argc, char* argv[]) {
     char* archivo_fuente = argv[1];
     char* archivo_destino = argv[2];
 
-    BMPfileheader fh;													// declara las estructuras de los
-    BMPinfoheader ih;													// headers del archivo bmp fuente.
+	// declara las estructuras de los headers del archivo bmp fuente.
+    BMPfileheader fh;													
+    BMPinfoheader ih;													
 
-    char* RBuffer = NULL;														// abre el archivo bmp, levanto los
-	char* GBuffer = NULL;														// headers y carga los datos de la
-	char* BBuffer = NULL;														// imagen en los buffer de cada canal (RGB).
+    char* RBuffer = NULL;		
+	char* GBuffer = NULL;		
+	char* BBuffer = NULL;		
+	
+	bool bOK;
 
+	// abre el archivo bmp, levanto los headers y carga los datos de la
+	// imagen en los buffer de cada canal (RGB).
 	bOK = readbmp(archivo_fuente, &fh, &ih, &RBuffer, &GBuffer, &BBuffer);
 
     if (bOK) {
-//     	//writecbmp(archivo_destino, &fh, &ih, RBuffer, GBuffer, BBuffer);
-//
-// 		// ROMPE TOODO EN PEDAZOS
-//     	int y;
-//     	int x;
-//     	for (y = 0 ; y < ih.Width / 8 ; y++) {
-//     		for (x = 0 ; x < ih.Height / 8 ; x++) {
-//     			writecuadradito(archivo_destino, &fh, &ih, RBuffer, GBuffer, BBuffer, x, y);
-//     		}
-//     	}
-
-    	int cantCols = ih.Width / 8;
+		int i, j;
+		int cantCols = ih.Width / 8;
     	int cantRows = ih.Height / 8;
-
 
 /*
 		// Psicodeliaaaa!
@@ -61,8 +55,6 @@ int main (int argc, char* argv[]) {
 			{1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0}
 		};
 */
-
-
 /*
 		// Predator / Ascii Art
 		float DCT[8][8] = {
@@ -77,13 +69,8 @@ int main (int argc, char* argv[]) {
 		};
 */
 
-		int i, j;
-
-
 		float DCT[8][8];
 		generarDCT(DCT);
-
-
 
 //     	printf("DCT :)\n");
 //     	for (i = 0 ; i < 8 ; i++) {
@@ -97,68 +84,48 @@ int main (int argc, char* argv[]) {
 		float bloque_transformado[8][8];
 		short bloque_cuantizado[8][8];
 		short * bloque_codificado = NULL;
-		unsigned char Rbloque[8][8];
-		unsigned char Gbloque[8][8];
-		unsigned char Bbloque[8][8];
+		char Rbloque[8][8];
+		char Gbloque[8][8];
+		char Bbloque[8][8];
 
+		// matriz temporal donde se va a guardar el bloque a transformar
+		// en formato float.
 		float MTemp[8][8];
 
-		int y;
-		int x;
+		float DCT_Trasp[8][8];
+		generarDCT(DCT_Trasp);
+		trasponer(DCT_Trasp);
+
+		
+		int x, y;
 		for (y = 0 ; y < cantRows ; y++) {
 			for (x = 0 ; x < cantCols ; x++) {
 				dividirEnBloques(RBuffer, cantCols, Rbloque, x, y);
-//  				printf("Rbloque ASM pre:\n");
-//  				for (i = 0 ; i < 8 ; i++) {
-//  					for (j = 0 ; j < 8 ; j++) {
-//  						printf("%d\t", Rbloque[i][j]);
-//  					}
-//  					printf("\n");
-//  				}
-//  				printf("\n");
-
 				transformar(Rbloque, DCT, bloque_transformado, MTemp);
 				cuantizar(bloque_transformado, FQ_MATRIX, bloque_cuantizado);
-// 				printf("Rbloque cuantizado:\n");
-// 				for (i = 0 ; i < 8 ; i++) {
-// 					for (j = 0 ; j < 8 ; j++) {
-// 						printf("%d\t", bloque_cuantizado[i][j]);
-// 					}
-// 					printf("\n");
-// 				}
-// 				printf("\n");
-
-				decuantizar(bloque_cuantizado, bloque_transformado);
-// 				printf("Rbloque decuantizado:\n");
-// 				for (i = 0 ; i < 8 ; i++) {
-// 					for (j = 0 ; j < 8 ; j++) {
-// 						printf("%f\t", bloque_transformado[i][j]);
-// 					}
-// 					printf("\n");
-// 				}
-// 				printf("\n");
-
-				antitransformar(bloque_transformado, DCT, Rbloque);
-// 				printf("Rbloque antitrans:\n");
-// 				for (i = 0 ; i < 8 ; i++) {
-// 					for (j = 0 ; j < 8 ; j++) {
-// 						printf("%d\t", Rbloque[i][j]);
-// 					}
-// 					printf("\n");
-// 				}
-// 				printf("\n");
+				
+				decuantizar_C(bloque_cuantizado, bloque_transformado);
+				antitransformar_C(bloque_transformado, DCT, Rbloque);
+// 				decuantizar(bloque_cuantizado, FQ_MATRIX, bloque_transformado);
+// 				antitransformar(bloque_transformado, DCT_Trasp, Rbloque);
 
 				dividirEnBloques(BBuffer, cantCols, Bbloque, x, y);
 				transformar(Bbloque, DCT, bloque_transformado, MTemp);
 				cuantizar(bloque_transformado, FQ_MATRIX, bloque_cuantizado);
-				decuantizar(bloque_cuantizado, bloque_transformado);
-				antitransformar(bloque_transformado, DCT, Bbloque);
+				
+				decuantizar_C(bloque_cuantizado, bloque_transformado);
+				antitransformar_C(bloque_transformado, DCT, Bbloque);
+// 				decuantizar(bloque_cuantizado, FQ_MATRIX, bloque_transformado);
+// 				antitransformar(bloque_transformado, DCT_Trasp, Bbloque);
 
 				dividirEnBloques(GBuffer, cantCols, Gbloque, x, y);
 				transformar(Gbloque, DCT, bloque_transformado, MTemp);
 				cuantizar(bloque_transformado, FQ_MATRIX, bloque_cuantizado);
-				decuantizar(bloque_cuantizado, bloque_transformado);
-				antitransformar(bloque_transformado, DCT, Gbloque);
+				
+				decuantizar_C(bloque_cuantizado, bloque_transformado);
+				antitransformar_C(bloque_transformado, DCT, Gbloque);
+// 				decuantizar(bloque_cuantizado, FQ_MATRIX, bloque_transformado);
+// 				antitransformar(bloque_transformado, DCT_Trasp, Gbloque);
 
 				unirBloques(RBuffer, cantCols, Rbloque, x, y);
 				unirBloques(GBuffer, cantCols, Gbloque, x, y);

@@ -35,7 +35,7 @@ section .text
 ;;;;;;;;; MUL TIPLICAR ;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-	%macro pohrmonheioh 3	;%1 ~ %2 = %3    (REGISTROS)	;la escribimos asi porque es soft
+	%macro pohrmonheioh1 3	;%1 ~ %2 = %3    (REGISTROS)	;la escribimos asi porque es soft
 		mov esi, %1
 		mov edi, %2
 		mov ecx, %3
@@ -151,9 +151,9 @@ transformar:
 
 	char_to_float p_bloque_in, p_MTemp
 pri_mult:
-	pohrmonheioh p_dct, p_MTemp, p_bloque_out
+	pohrmonheioh1 p_dct, p_MTemp, p_bloque_out
 seg_mult:
-	pohrmonheioh p_bloque_out, p_dct, p_bloque_out
+	pohrmonheioh1 p_bloque_out, p_dct, p_bloque_out
 
 	prelude 0
 	ret

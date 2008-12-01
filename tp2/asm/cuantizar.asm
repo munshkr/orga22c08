@@ -2,7 +2,7 @@
 ; 	int i, j;
 ; 	for (i = 0 ; i < 8 ; i++) {
 ; 		for (j = 0 ; j < 8 ; j++) {
-; 			bloque_cuantizado[i][j] = bloque_transformado[i][j] / Q_MATRIX[i][j];
+; 			bloque_cuantizado[i][j] = bloque_transformado[i][j] / q[i][j];
 ; 		}
 ; 	}
 ; }
@@ -31,11 +31,32 @@ global cuantizar
 %macro dividir 2			; %1 y %2 son registros XMM
 	movups %1, [esi]
 	movups %2, [edi]
-	times 16 inc esi
-	times 16 inc edi
-
+	lea esi, [esi + ebx]
+	lea edi, [edi + ebx]
+	
 	divps %1, %2
-	cvttps2dq %1, %1
+%endmacro
+
+%macro dividir_y_almacenar 0
+	dividir xmm0, xmm4
+	dividir xmm1, xmm5
+	dividir xmm2, xmm6
+	dividir xmm3, xmm7
+
+	; convierte los floats de xmm0/1/2/3 a shorts 
+	; empaquetándolos en xmm0/2
+	cvttps2dq xmm0, xmm0
+	cvttps2dq xmm1, xmm1
+	packssdw xmm0, xmm1
+	cvttps2dq xmm2, xmm2
+	cvttps2dq xmm3, xmm3
+	packssdw xmm2, xmm3
+
+	; almacena los shorts en memoria (son 8)
+	movdqu [edx], xmm0
+	lea edx, [edx + ebx]
+	movdqu [edx], xmm2
+	lea edx, [edx + ebx]
 %endmacro
 
 
@@ -47,61 +68,16 @@ global cuantizar
 cuantizar:
 	prologue 0
 
+	mov ebx, 16
 	mov esi, p_bloque_in
 	mov edi, p_q
 	mov edx, p_bloque_out
 
-	dividir xmm0, xmm4
-	dividir xmm1, xmm5
-	dividir xmm2, xmm6
-	dividir xmm3, xmm7
-
-	packssdw xmm0, xmm1
-	packssdw xmm2, xmm3
-
-	movdqu [edx], xmm0
-	times 16 inc edx
-	movdqu [edx], xmm2
-	times 16 inc edx
-
-	dividir xmm0, xmm4
-	dividir xmm1, xmm5
-	dividir xmm2, xmm6
-	dividir xmm3, xmm7
-
-	packssdw xmm0, xmm1
-	packssdw xmm2, xmm3
-
-	movdqu [edx], xmm0
-	times 16 inc edx
-	movdqu [edx], xmm2
-	times 16 inc edx
-
-	dividir xmm0, xmm4
-	dividir xmm1, xmm5
-	dividir xmm2, xmm6
-	dividir xmm3, xmm7
-
-	packssdw xmm0, xmm1
-	packssdw xmm2, xmm3
-
-	movdqu [edx], xmm0
-	times 16 inc edx
-	movdqu [edx], xmm2
-	times 16 inc edx
-
-	dividir xmm0, xmm4
-	dividir xmm1, xmm5
-	dividir xmm2, xmm6
-	dividir xmm3, xmm7
-
-	packssdw xmm0, xmm1
-	packssdw xmm2, xmm3
-
-	movdqu [edx], xmm0
-	times 16 inc edx
-	movdqu [edx], xmm2
-	times 16 inc edx
+	; en cada "dividir_y_almacenar" se trabajan 16 de los 64 datos.
+	dividir_y_almacenar
+	dividir_y_almacenar
+	dividir_y_almacenar
+	dividir_y_almacenar
 
 	prelude 0
 	ret
