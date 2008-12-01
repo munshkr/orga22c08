@@ -62,6 +62,7 @@ int main (int argc, char* argv[]) {
 		};
 */
 
+
 /*
 		// Predator / Ascii Art
 		float DCT[8][8] = {
@@ -78,8 +79,11 @@ int main (int argc, char* argv[]) {
 
 		int i, j;
 
+
 		float DCT[8][8];
 		generarDCT(DCT);
+
+
 
 //     	printf("DCT :)\n");
 //     	for (i = 0 ; i < 8 ; i++) {
