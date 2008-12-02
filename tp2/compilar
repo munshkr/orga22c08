@@ -9,9 +9,11 @@ yasm -felf -gdwarf2 -o cuantizar.o asm/cuantizar.asm
 yasm -felf -gdwarf2 -o decuantizar.o asm/decuantizar.asm
 yasm -felf -gdwarf2 -o antitransformar.o asm/antitransformar.asm
 yasm -felf -gdwarf2 -o unir.o asm/unir.asm
+yasm -felf -gdwarf2 -o codificar.o asm/codificar.asm
+yasm -felf -gdwarf2 -o decodificar.o asm/decodificar.asm
 
 gcc -c -g bmp2joc2/bmp2joc2.c
 
-gcc -g -o run_bmp2joc2 -lm bmp2joc2.o trasponer.o dividir.o gdct.o unir.o transformar.o cuantizar.o decuantizar.o antitransformar.o
+gcc -g -o run_bmp2joc2 -lm bmp2joc2.o trasponer.o dividir.o gdct.o unir.o transformar.o cuantizar.o decuantizar.o antitransformar.o codificar.o decodificar.o
 
 rm *.o

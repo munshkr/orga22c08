@@ -14,9 +14,14 @@ extern void cuantizar(float bloque_transformado[8][8], float q[8][8], short bloq
 extern void decuantizar(short bloque_cuantizado[8][8], float q[8][8], float bloque_transformado[8][8]);
 extern void antitransformar(float bloque_transformado[8][8], float DCT_Trasp[8][8], char bloque[8][8], float temp[8][8]);
 
+//codificar devuelve la longitud del bloque codificado
+extern int codificar(short bloque_cuantizado[8][8], short* codificacion);
+
+//decodificar devuelve la cantidad de posiciones que se adelantaron en el stream
+extern int decodificar(short* codificacion, short bloque_decodificado[8][8]);
+
 extern void trasponer(float m[8][8]);
 
-		
 typedef struct _BMPfileheader {
     char MagicWord1;  // char "B"
     char MagicWord2;  // char "M"

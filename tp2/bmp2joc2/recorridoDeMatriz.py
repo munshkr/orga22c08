@@ -1,15 +1,15 @@
 #! /usr/bin/python
 
-matriz = [[125, -1, 0, 0, 0, 0, 0, 0],
-[0, 1, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, 0, 25704]
-]
-
+matriz = [
+		  [120, 5, -9, 4, -2, 1, 0, 0],
+		  [-2, -3, 0, 0, 0, 0, 0, 0],
+		  [4, -10, 5, -4, 2, -1, 0, 0],
+		  [0, 0, 0, 0, 0, 0, 0, 0],
+		  [-3, 4, -2, 1, 0, 0, 0, 0],
+		  [0, 0, 0, 0, 0, 0, 0, 0],
+		  [0, 0, 0, 0, 0, 0, 0, 0],
+		  [0, 0, 0, 0, 0, 0, 0, 0]
+		 ]
 
 print "Matriz:"
 for h in range(8):
@@ -56,21 +56,32 @@ for j in range(7):
 			cantCeros = 0
 		else:
 			cantCeros = cantCeros + 1
+if cantCeros > 0:
+	codStream.append(cantCeros)
+	codStream.append(valor)
 codStream.append(0)
 codStream.append(0)
 print 0, 0
 
 print "\nStream Codificado:"
-print codStream
-
+#print codStream
+for h in range(16):
+	for k in range(16):
+		if h*16+k < len(codStream):
+			print str(codStream[h*16+k])+"\t",
+		else:
+			print str(-1)+"\t",
+	print ""
+print "\n"
 print "Matriz Decodificada:"
 matriz=[]
 for i in range(8):
-	matriz.append([1]*8)
+	matriz.append([-1]*8)
 matriz[0][0] = codStream[0]
 cantCeros = codStream[1]
 streamAct = 2
 primero = True
+
 for i in range(8):
 	for j in range(i+1):
 		if i % 2 == 0:
@@ -79,6 +90,7 @@ for i in range(8):
 		else:
 			row = j
 			col = i-j
+		#print "analizar_pos", row*8*2+col*2
 		if cantCeros > 0:
 			matriz[row][col] = 0
 			cantCeros = cantCeros - 1
@@ -99,6 +111,7 @@ for j in range(7):
 		else:
 			row = 8+j-i
 			col = i
+		#print "analizar_pos", row*8*2+col*2
 		if cantCeros > 0:
 			matriz[row][col] = 0
 			cantCeros = cantCeros - 1

@@ -6,7 +6,7 @@
 // AUXILIARES
 
 
-	float FQ_MATRIX[8][8] = {
+	float Q_MATRIX[8][8] = {
 		{16, 11, 10, 16,  24,  40,  51,  61},
 		{12, 12, 14, 19,  26,  58,  60,  55},
 		{14, 13, 16, 24,  40,  57,  69,  56},
@@ -17,41 +17,7 @@
 		{72, 92, 95, 98, 112, 100, 103,  99}
 	};
 
-	unsigned char Q_MATRIX[8][8] = {
-		{16, 11, 10, 16,  24,  40,  51,  61},
-		{12, 12, 14, 19,  26,  58,  60,  55},
-		{14, 13, 16, 24,  40,  57,  69,  56},
-		{14, 17, 22, 29,  51,  87,  80,  62},
-		{18, 22, 37, 56,  68, 109, 103,  77},
-		{24, 35, 55, 64,  81, 104, 113,  92},
-		{49, 64, 78, 87, 103, 121, 120, 101},
-		{72, 92, 95, 98, 112, 100, 103,  99}
-	};
-
-	/*
-	float FQ_MATRIX[8][8] = {
-		{1, 1, 1, 1, 1, 1, 1, 1},
- 		{1, 1, 1, 1, 1, 1, 1, 1},
- 		{1, 1, 1, 1, 1, 1, 1, 1},
- 		{1, 1, 1, 1, 1, 1, 1, 1},
- 		{1, 1, 1, 1, 1, 1, 1, 1},
- 		{1, 1, 1, 1, 1, 1, 1, 1},
- 		{1, 1, 1, 1, 1, 1, 1, 1},
- 		{1, 1, 1, 1, 1, 1, 1, 1}
-	};
-	const unsigned char Q_MATRIX[8][8] = {
-		{1, 1, 1, 1, 1, 1, 1, 1},
- 		{1, 1, 1, 1, 1, 1, 1, 1},
- 		{1, 1, 1, 1, 1, 1, 1, 1},
- 		{1, 1, 1, 1, 1, 1, 1, 1},
- 		{1, 1, 1, 1, 1, 1, 1, 1},
- 		{1, 1, 1, 1, 1, 1, 1, 1},
- 		{1, 1, 1, 1, 1, 1, 1, 1},
- 		{1, 1, 1, 1, 1, 1, 1, 1}
-	};
-	*/
-
-/*	
+/*
 	// COMPRESION NORMAL COPADA CON DCT PSICODELICA
 	float FQ_MATRIX[8][8] = {
 		{20, 20, 20, 20, 20, 20, 20, 20},
@@ -63,6 +29,7 @@
  		{20, 20, 20, 20, 20, 20, 20, 20},
  		{20, 20, 20, 20, 20, 20, 20, 20}
 	};
+
 	const unsigned char Q_MATRIX[8][8] = {
 		{1, 1, 1, 1, 1, 1, 1, 1},
  		{1, 1, 1, 1, 1, 1, 1, 1},
@@ -73,21 +40,7 @@
  		{1, 1, 1, 1, 1, 1, 1, 1},
  		{1, 1, 1, 1, 1, 1, 1, 1}
 	};
-	*/
 
-
-	/*
-	// LIMA LOS AZULES Y ROJOS CON DCT PSICODELICA
-	float FQ_MATRIX[8][8] = {
-		{100, 1, 1, 1, 1, 1, 1, 1},
- 		{100, 100, 1, 1, 1, 1, 1, 1},
- 		{100, 100, 100, 1, 1, 1, 1, 1},
- 		{100, 100, 100, 100, 1, 1, 1, 1},
- 		{100, 100, 100, 100, 100, 1, 1, 1},
- 		{100, 100, 100, 100, 100, 100, 1, 1},
- 		{100, 100, 100, 100, 100, 100, 100, 1},
- 		{100, 100, 100, 100, 100, 100, 100, 100}
-	};
 	const unsigned char Q_MATRIX[8][8] = {
 		{1, 255, 255, 255, 255, 255, 255, 255},
  		{1, 1, 255, 255, 255, 255, 255, 255},
@@ -98,9 +51,8 @@
  		{1, 1, 1, 1, 1, 1, 1, 255},
  		{1, 1, 1, 1, 1, 1, 1, 1}
 	};
-	*/
-
-	/*
+	
+	// LIMA LOS AZULES Y ROJOS CON DCT PSICODELICA
 	// HACE UN SOMBREADO RARO CON DCT PSICODELICA
 	float FQ_MATRIX[8][8] = {
 		{100, 1, 1, 1, 1, 1, 1, 1},
@@ -112,31 +64,9 @@
  		{100, 100, 100, 100, 100, 100, 100, 1},
  		{100, 100, 100, 100, 100, 100, 100, 100}
 	};
-	const unsigned char Q_MATRIX[8][8] = {
-		{100, 1, 1, 1, 1, 1, 1, 1},
- 		{100, 100, 1, 1, 1, 1, 1, 1},
- 		{100, 100, 100, 1, 1, 1, 1, 1},
- 		{100, 100, 100, 100, 1, 1, 1, 1},
- 		{100, 100, 100, 100, 100, 1, 1, 1},
- 		{100, 100, 100, 100, 100, 100, 1, 1},
- 		{100, 100, 100, 100, 100, 100, 100, 1},
- 		{100, 100, 100, 100, 100, 100, 100, 100}
-	};
-	*/
 
-	/*
 	// LUM
 	float FQ_MATRIX[8][8] = {
-		{17, 18, 24, 47, 99, 99, 99, 99},
-		{18, 21, 26, 66, 99, 99, 99, 99},
-		{24, 26, 56, 99, 99, 99, 99, 99},
-		{47, 66, 99, 99, 99, 99, 99, 99},
-		{99, 99, 99, 99, 99, 99, 99, 99},
-		{99, 99, 99, 99, 99, 99, 99, 99},
-		{99, 99, 99, 99, 99, 99, 99, 99},
-		{99, 99, 99, 99, 99, 99, 99, 99}
-	};
-	const unsigned char Q_MATRIX[8][8] = {
 		{17, 18, 24, 47, 99, 99, 99, 99},
 		{18, 21, 26, 66, 99, 99, 99, 99},
 		{24, 26, 56, 99, 99, 99, 99, 99},
@@ -213,7 +143,6 @@
 
 // FIN AUXILIARES
 
-
 void dividirEnBloques_C(char* CBuffer, int cantCols, char retBuff[8][8], int x, int y) {
 	CBuffer = CBuffer + (x * 64) + (y * cantCols * 64);
 	int i,j;
@@ -262,7 +191,6 @@ void transformar_C(char bloque[8][8], float DCT[8][8], float bloque_transformado
 	mult_matrices_float_float(bloqueTemp, DCT, bloque_transformado);
 	transponer_float(DCT);
 
-
 // 		printf("Bloque trasp:\n");
 // 		int i,j;
 //     	for (i = 0 ; i < 8 ; i++) {
@@ -288,36 +216,6 @@ void cuantizar_C(float bloque_transformado[8][8], short bloque_cuantizado[8][8])
 	}
 }
 
-// !! ver tipo de bloque_codificado[8][8], short o char?
-void codificar(short bloque_cuantizado[8][8], short * bloque_codificado) {
-
-/*
-	int n = 0;
-	int i = 0;
-	int j = 0;
-	int max = 1;
-	int incI = 0;
-	int incJ = 1;
-
-	for (n = 0 ; n < 64 ; n++) {
-		i += incI;
-		i += incJ;
-		if (j == max) {
-			incJ = -1;
-			incI = 1;
-		}
-
-	}
-*/
-
-	// DESISTÍ, ARMAR ESTE CAMINO ES UN BARDO
-	// EL RECORRIDO DE ÍNDICES ESTÁ PLASMADO EN EL ARCHIVO
-	// recorridoDeMatriz.txt
-
-
-
-}
-
 void decuantizar_C(short bloque_cuantizado[8][8], float bloque_transformado[8][8]) {
 	int i, j;
 
@@ -337,9 +235,5 @@ void antitransformar_C(float bloque_transformado[8][8], float DCT[8][8], char bl
 	mult_matrices_float_float_toChar(bloqueTemp, DCT, bloque);
 	transponer_char(bloque);
 }
-
-
-
-
 
 #endif
