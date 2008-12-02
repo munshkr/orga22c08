@@ -6,14 +6,14 @@
 #include "funcionesASM.h"
 #include "writecuadradito.h"
 
-//#include "writejoc2.h"
+#include "writejoc2.h"
 #include "writecbmp.h"
 
 
 int main (int argc, char* argv[]) {
-	
+
 	 // si no recibe los 2 parametros, termina.
-	if (argc < 3) {													
+	if (argc < 3) {
 		printf("Número de parámetros incorrecto.\n");
 		printf("Uso:  bmp2joc2 FUENTE DESTINO\n");
         printf("\n");
@@ -24,13 +24,13 @@ int main (int argc, char* argv[]) {
     char* archivo_destino = argv[2];
 
 	// declara las estructuras de los headers del archivo bmp fuente.
-    BMPfileheader fh;													
-    BMPinfoheader ih;													
+    BMPfileheader fh;
+    BMPinfoheader ih;
 
-    unsigned char* RBuffer = NULL;		
-	unsigned char* GBuffer = NULL;		
-	unsigned char* BBuffer = NULL;		
-	
+    unsigned char* RBuffer = NULL;
+	unsigned char* GBuffer = NULL;
+	unsigned char* BBuffer = NULL;
+
 	bool bOK;
 
 	// abre el archivo bmp, levanto los headers y carga los datos de la
@@ -74,7 +74,6 @@ int main (int argc, char* argv[]) {
 
 		float bloque_transformado[8][8];
 		short bloque_cuantizado[8][8];
-		short * bloque_codificado = NULL;
 		unsigned char Rbloque[8][8];
 		unsigned char Gbloque[8][8];
 		unsigned char Bbloque[8][8];
@@ -87,40 +86,89 @@ int main (int argc, char* argv[]) {
 		generarDCT(DCT_Trasp);
 		trasponer(DCT_Trasp);
 
-/*		short codificacion[16][16];
-		int cantidad = codificar(bloque_cuantizado,(short*)codificacion);
-		int	cantidad2 = decodificar((short*)codificacion, bloque_cuantizado);
-		if(cantidad != cantidad2) 
-			printf("TPario!!!!!!!!");*/
-		
-		int x, y;
+
+		//Pido un buffer de codificación del doble de la imagen
+		unsigned short* codificacion = (short*)malloc(ih.SizeImage * 2);
+		if(codificacion == NULL){
+			printf("Hubo un problema al intentar alocar memoria para codificar\n");
+			return EXIT_SUCCESS;
+		}
+		//este es un backup para guardar al joc2
+		unsigned short* codifBckp = codificacion;
+
+		//este es un backup de la direccion del buffer para hacer las pruebas de decodificacion
+		//en este mismo archivo
+		unsigned short* codificacion2 = codificacion;
+
+		int x, y, codLen=0, longTemp;
 		for (y = 0 ; y < cantRows ; y++) {
 			for (x = 0 ; x < cantCols ; x++) {
 				dividirEnBloques(RBuffer, cantCols, Rbloque, x, y);
 				transformar(Rbloque, DCT, bloque_transformado, MTemp);
 				cuantizar(bloque_transformado, Q_MATRIX, bloque_cuantizado);
+		    	for (i = 0 ; i < 8 ; i++) {
+					for (j = 0 ; j < 8 ; j++) {
+						printf("%d\t", bloque_cuantizado[i][j]);
+					}
+					printf("\n");
+				}
+				printf("\n");
+				longTemp = codificar(bloque_cuantizado, codificacion);
+				codificacion += longTemp;
+				codLen += longTemp;
+
+				codificacion2 += decodificar( codificacion2, bloque_cuantizado);
 				decuantizar(bloque_cuantizado, Q_MATRIX, bloque_transformado);
 				antitransformar(bloque_transformado, DCT_Trasp, Rbloque, MTemp);
+				unirBloques(RBuffer, cantCols, Rbloque, x, y);
+			}
+		}
 
-				dividirEnBloques(BBuffer, cantCols, Bbloque, x, y);
-				transformar(Bbloque, DCT, bloque_transformado, MTemp);
-				cuantizar(bloque_transformado, Q_MATRIX, bloque_cuantizado);
-				decuantizar(bloque_cuantizado, Q_MATRIX, bloque_transformado);
-				antitransformar(bloque_transformado, DCT_Trasp, Bbloque, MTemp);
-
+		for (y = 0 ; y < cantRows ; y++) {
+			for (x = 0 ; x < cantCols ; x++) {
 				dividirEnBloques(GBuffer, cantCols, Gbloque, x, y);
 				transformar(Gbloque, DCT, bloque_transformado, MTemp);
 				cuantizar(bloque_transformado, Q_MATRIX, bloque_cuantizado);
+				/*
+				longTemp= codificar(bloque_cuantizado, codificacion);
+				codificacion += longTemp;
+				codLen += longTemp;
+
+				codificacion2 += decodificar(codificacion2, bloque_cuantizado);
+				*/
 				decuantizar(bloque_cuantizado, Q_MATRIX, bloque_transformado);
 				antitransformar(bloque_transformado, DCT_Trasp, Gbloque, MTemp);
-
-				unirBloques(RBuffer, cantCols, Rbloque, x, y);
 				unirBloques(GBuffer, cantCols, Gbloque, x, y);
+			}
+		}
+
+		for (y = 0 ; y < cantRows ; y++) {
+			for (x = 0 ; x < cantCols ; x++) {
+				dividirEnBloques(BBuffer, cantCols, Bbloque, x, y);
+				transformar(Bbloque, DCT, bloque_transformado, MTemp);
+				cuantizar(bloque_transformado, Q_MATRIX, bloque_cuantizado);
+				/*
+				longTemp= codificar(bloque_cuantizado, codificacion);
+				codificacion += longTemp;
+				codLen += longTemp;
+
+				codificacion2 += decodificar(codificacion2, bloque_cuantizado);
+				*/
+				decuantizar(bloque_cuantizado, Q_MATRIX, bloque_transformado);
+				antitransformar(bloque_transformado, DCT_Trasp, Bbloque, MTemp);
 				unirBloques(BBuffer, cantCols, Bbloque, x, y);
 			}
 		}
-		
+
+		//declaro el fileheader de JOC2
+		JOC2fileheader joc2fh;
+		joc2fh.fType = 0x32434F4A;
+		joc2fh.bSize = codLen;
+
 		writejbmp(archivo_destino, &fh, &ih, RBuffer, GBuffer, BBuffer);
+
+		//le paso el puntero a codificacion sin adelantar
+		//writejoc2(&joc2fh, &fh, &ih, codifBckp, archivo_destino);
     }
 
 	if (RBuffer != NULL)

@@ -11,10 +11,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "bmp2oc2.h"
+#include "bmp2joc2.h"
 
-
-int writeoc2(OC2fileheader* oc2fh, BMPfileheader* fh, BMPinfoheader* ih, codificacion* tc, char* bitstream, const char* file_path) {
+int writejoc2(JOC2fileheader* joc2fh, BMPfileheader* fh, BMPinfoheader* ih, short* codificacion, char* file_path) {
 
 	int ok = 0;
 	int esValido = true;
@@ -22,11 +21,9 @@ int writeoc2(OC2fileheader* oc2fh, BMPfileheader* fh, BMPinfoheader* ih, codific
 	FILE * f2 = fopen(file_path, "wb");
 
 	// guardo el header del oc2
-	ok = fwrite( &(oc2fh->fType), sizeof(int), 1, f2 );
+	ok = fwrite( &(joc2fh->fType), sizeof(int), 1, f2 );
 	if (!ok) esValido = false;
-	ok = fwrite( &(oc2fh->tcSize), sizeof(short), 1, f2 );
-	if (!ok) esValido = false;
-	ok = fwrite( &(oc2fh->bsSize), sizeof(long long int), 1, f2 );
+	ok = fwrite( &(joc2fh->bSize), sizeof(int), 1, f2 );
 	if (!ok) esValido = false;
 
 	// guardo el fileheader del bmp
@@ -67,21 +64,17 @@ int writeoc2(OC2fileheader* oc2fh, BMPfileheader* fh, BMPinfoheader* ih, codific
     ok = fwrite ( &(ih->ClrImportant), sizeof(int), 1, f2 );
 	if (!ok) esValido = false;
 
-	// guardo la tabla de códigos
-	ok = fwrite ( tc, oc2fh->tcSize, 1, f2 );
-	if (!ok) esValido = false;
-
-	// guardo el bitstream de codificación
-	int bytes_buf_bitstream = oc2fh->bsSize / 32;
-	if ((oc2fh->bsSize % 32) != 0) {
-		bytes_buf_bitstream++;
+	// guardo la codificación
+	if ((joc2fh->bSize % 4) != 0) {
+		//Esto supuestamente no debería pasar nunca porque la imagen
+		//es multiplo de 8 en ambas dimensiones
+		printf("HUBO UN GRAVE PROBLEMA AL GRABAR, BYTESTREAM%4 != 0");
 	}
-	bytes_buf_bitstream *= 4;
 
-	ok = fwrite ( bitstream, bytes_buf_bitstream, 1, f2 );
+	ok = fwrite ( codificacion, joc2fh->bSize, sizeof(short), f2 );
 	if (!ok) esValido = false;
 
-	//fclose(f2 );
+	//fclose(f2 ); --> Cuando cerrabamos el archivo nos tiraba error el C
 	return esValido;
 }
 

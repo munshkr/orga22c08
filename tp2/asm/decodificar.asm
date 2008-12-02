@@ -134,7 +134,11 @@ decodificar:
 hay_ceros:
 	xor eax, eax
 	mov [ebx], ax	; guardo un cero
-	inc edx 		; se adelanta el stream
+	inc edx 		; se adelanta el stream, porque si el ultimo es un cero
+					; está guardado en la matriz como un cero. Como yo los
+					; ceros no los leo de la memoria, sino que los fabrico,
+					; tengo que "hacer como" que lei una vez más de memoria
+					; para que el valor de retorno no de mal.
 fin_analisis:
 	times 2 inc edx	; me como los dos ceros del final del stream
 	mov eax, edx

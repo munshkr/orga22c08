@@ -46,5 +46,9 @@ typedef struct _BMPinfoheader {
 } BMPinfoheader;
 
 
+typedef struct _OC2fileheader {
+	int fType;			// el string "JOC2" -> 0x4A4F4332 (en little-endian)
+	int bSize;			// tamaño en bytes del bitstream
+} JOC2fileheader;
 
 #endif // __BMP2JOC2_H__

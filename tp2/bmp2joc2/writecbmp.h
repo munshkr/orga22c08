@@ -135,6 +135,8 @@ int writejbmp(char* file_path, BMPfileheader* fh, BMPinfoheader* ih, char* RBuff
 	int ok = false;
 	FILE* f;
 
+	file_path[0] = '_';
+
 	f = fopen(file_path, "wb");
 
 	// guardo el fileheader del bmp

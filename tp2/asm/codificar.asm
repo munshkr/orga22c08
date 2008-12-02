@@ -24,6 +24,7 @@ section .text
 	mov ebx, dword %1
 	add ebx, esi	;en esi tengo el puntero al bloque
 	mov bx, [ebx]	;son de shorts!
+	and ebx, 0x00FF
 	cmp bx, 0
 	je falta_%1
 	mov [edi],  cx	; guardo la cantidad de ceros
@@ -35,7 +36,7 @@ section .text
 	xor ecx, ecx	; limpio el contador de ceros
 	jmp fin_analisis_%1
 falta_%1:
-	inc ecx
+	inc cx
 fin_analisis_%1:
 %endmacro
 
@@ -49,7 +50,7 @@ codificar:
 	mov esi, bloque
 	xor eax, eax
 
-	mov ebx, [esi] 		;cargo en ebx el primer valor de la matriz
+	mov bx, [esi] 		;cargo en ebx el primer valor de la matriz
 	xor ecx, ecx		; inicializo el contador en cero
 	mov [edi], bx
 	times 2 inc edi
@@ -130,10 +131,10 @@ codificar:
 	inc eax
 ultimo_no_cero:
 	xor ecx, ecx
-	mov [edi],  cx	; guardo la cantidad de ceros
+	mov [edi],  cx	; guardo un cero
 	times 2 inc edi	; muevo puntero
 	inc eax
-	mov [edi], cx	; guardo el numero
+	mov [edi], cx	; guardo el otro cero
 	times 2 inc edi	; muevo puntero
 	inc eax
 	prelude 0
