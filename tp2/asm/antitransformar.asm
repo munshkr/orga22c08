@@ -97,10 +97,10 @@ extern trasponer
 	packssdw xmm4, xmm5
 	packssdw xmm6, xmm7
 	
-	packsswb xmm0, xmm2		; en xmm0 tengo 16 valores en bytes
+	packuswb xmm0, xmm2		; en xmm0 tengo 16 valores en bytes
 	movdqu [edi], xmm0
 	lea edi, [edi + ebx]
-	packsswb xmm4, xmm6		; en xmm4 tengo otros 16 valores en bytes
+	packuswb xmm4, xmm6		; en xmm4 tengo otros 16 valores en bytes
 	movdqu [edi], xmm4
 	lea edi, [edi + ebx]
 %endmacro
