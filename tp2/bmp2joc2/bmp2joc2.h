@@ -6,13 +6,13 @@
 #define true 1
 
 
-extern void dividirEnBloques(char* CBuffer, int cantCols, char retBuff[8][8], int x, int y);
+extern void dividirEnBloques(unsigned char* CBuffer, int cantCols, unsigned char retBuff[8][8], int x, int y);
 extern void generarDCT(float DCT[8][8]);
-extern void unirBloques(char* CBuffer, int cantCols, char Cbloque[8][8], int x, int y);
-extern void transformar(char bloque[8][8], float DCT[8][8], float bloque_transformado[8][8], float temp[8][8]);
+extern void unirBloques(unsigned char* CBuffer, int cantCols, unsigned char Cbloque[8][8], int x, int y);
+extern void transformar(unsigned char bloque[8][8], float DCT[8][8], float bloque_transformado[8][8], float temp[8][8]);
 extern void cuantizar(float bloque_transformado[8][8], float q[8][8], short bloque_cuantizado[8][8]);
 extern void decuantizar(short bloque_cuantizado[8][8], float q[8][8], float bloque_transformado[8][8]);
-extern void antitransformar(float bloque_transformado[8][8], float DCT_Trasp[8][8], char bloque[8][8], float temp[8][8]);
+extern void antitransformar(float bloque_transformado[8][8], float DCT_Trasp[8][8], unsigned char bloque[8][8], float temp[8][8]);
 
 //codificar devuelve la longitud del bloque codificado
 extern int codificar(short bloque_cuantizado[8][8], short* codificacion);

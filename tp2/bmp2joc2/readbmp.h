@@ -14,7 +14,7 @@
 void print_headers(BMPfileheader* fh, BMPinfoheader* ih);
 
 
-int readbmp(const char* path, BMPfileheader* fh, BMPinfoheader* ih, char** RBuffer, char** GBuffer, char** BBuffer) {
+int readbmp(const char* path, BMPfileheader* fh, BMPinfoheader* ih, unsigned char** RBuffer, unsigned char** GBuffer, unsigned char** BBuffer) {
 	//char* buffer = NULL;
 
     // intenta abrir el archivo en path
@@ -121,7 +121,7 @@ int readbmp(const char* path, BMPfileheader* fh, BMPinfoheader* ih, char** RBuff
         	int validRowSize = ih->Width * 3;
         	int bytesMetidos = 0;
         	int j, k;
-        	char* TBuffer = malloc(fileRowSize);
+        	unsigned char* TBuffer = malloc(fileRowSize);
 
         	int indiceLoco;
 

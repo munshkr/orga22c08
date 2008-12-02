@@ -27,9 +27,9 @@ int main (int argc, char* argv[]) {
     BMPfileheader fh;													
     BMPinfoheader ih;													
 
-    char* RBuffer = NULL;		
-	char* GBuffer = NULL;		
-	char* BBuffer = NULL;		
+    unsigned char* RBuffer = NULL;		
+	unsigned char* GBuffer = NULL;		
+	unsigned char* BBuffer = NULL;		
 	
 	bool bOK;
 
@@ -75,9 +75,9 @@ int main (int argc, char* argv[]) {
 		float bloque_transformado[8][8];
 		short bloque_cuantizado[8][8];
 		short * bloque_codificado = NULL;
-		char Rbloque[8][8];
-		char Gbloque[8][8];
-		char Bbloque[8][8];
+		unsigned char Rbloque[8][8];
+		unsigned char Gbloque[8][8];
+		unsigned char Bbloque[8][8];
 
 		// matriz temporal donde se va a guardar el bloque a transformar
 		// en formato float.
@@ -94,12 +94,12 @@ int main (int argc, char* argv[]) {
 				dividirEnBloques(RBuffer, cantCols, Rbloque, x, y);
 				transformar(Rbloque, DCT, bloque_transformado, MTemp);
 				cuantizar(bloque_transformado, Q_MATRIX, bloque_cuantizado);
-				
 				short codificacion[16][16];
 				int cantidad = codificar(bloque_cuantizado,(short*)codificacion);
 				int	cantidad2 = decodificar((short*)codificacion, bloque_cuantizado);
-				if(cantidad != cantidad2) printf("TPario!!!!!!!!");
-
+				if(cantidad != cantidad2) 
+					printf("TPario!!!!!!!!");
+					
 				decuantizar_C(bloque_cuantizado, bloque_transformado);
 // 				decuantizar(bloque_cuantizado, Q_MATRIX, bloque_transformado);
 
@@ -113,7 +113,7 @@ int main (int argc, char* argv[]) {
 // 				printf("\n");
 
 				antitransformar_C(bloque_transformado, DCT, Rbloque);
-// 				antitransformar(bloque_transformado, DCT_Trasp, Rbloque);
+// 				antitransformar(bloque_transformado, DCT_Trasp, Rbloque, MTemp);
 // 				printf("Rbloque antitrans:\n");
 // 				for (i = 0 ; i < 8 ; i++) {
 // 					for (j = 0 ; j < 8 ; j++) {
@@ -126,27 +126,25 @@ int main (int argc, char* argv[]) {
 				dividirEnBloques(BBuffer, cantCols, Bbloque, x, y);
 				transformar(Bbloque, DCT, bloque_transformado, MTemp);
 				cuantizar(bloque_transformado, Q_MATRIX, bloque_cuantizado);
-				
 				decuantizar_C(bloque_cuantizado, bloque_transformado);
 				antitransformar_C(bloque_transformado, DCT, Bbloque);
 // 				decuantizar(bloque_cuantizado, Q_MATRIX, bloque_transformado);
-// 				antitransformar(bloque_transformado, DCT_Trasp, Bbloque);
+// 				antitransformar(bloque_transformado, DCT_Trasp, Bbloque, MTemp);
 
 				dividirEnBloques(GBuffer, cantCols, Gbloque, x, y);
 				transformar(Gbloque, DCT, bloque_transformado, MTemp);
 				cuantizar(bloque_transformado, Q_MATRIX, bloque_cuantizado);
-				
 				decuantizar_C(bloque_cuantizado, bloque_transformado);
 				antitransformar_C(bloque_transformado, DCT, Gbloque);
 // 				decuantizar(bloque_cuantizado, Q_MATRIX, bloque_transformado);
-// 				antitransformar(bloque_transformado, DCT_Trasp, Gbloque);
+// 				antitransformar(bloque_transformado, DCT_Trasp, Gbloque, MTemp);
 
 				unirBloques(RBuffer, cantCols, Rbloque, x, y);
 				unirBloques(GBuffer, cantCols, Gbloque, x, y);
 				unirBloques(BBuffer, cantCols, Bbloque, x, y);
 			}
 		}
-
+		
 		writejbmp(archivo_destino, &fh, &ih, RBuffer, GBuffer, BBuffer);
     }
 

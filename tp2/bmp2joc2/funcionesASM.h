@@ -78,9 +78,9 @@
 	};
 	*/
 
-	void transponer_char(char matrix[8][8]) {
+	void transponer_char(unsigned char matrix[8][8]) {
 		int i, j;
-		char save;
+		unsigned char save;
 
 		for (i = 0; i < 8; i++) {
 			for (j = 0; j < i; j++) {
@@ -104,7 +104,7 @@
 		}
 	}
 
-	void mult_matrices_float_char(float a1[8][8], char a2[8][8], float res[8][8]) {
+	void mult_matrices_float_char(float a1[8][8], unsigned char a2[8][8], float res[8][8]) {
 		int i = 0;
 		int j = 0;
 		int k = 0;
@@ -128,7 +128,7 @@
 		}
 	}
 
-	void mult_matrices_float_float_toChar(float a1[8][8], float a2[8][8], char res[8][8]) {
+	void mult_matrices_float_float_toChar(float a1[8][8], float a2[8][8], unsigned char res[8][8]) {
 		int i = 0;
 		int j = 0;
 		int k = 0;
@@ -143,17 +143,17 @@
 
 // FIN AUXILIARES
 
-void dividirEnBloques_C(char* CBuffer, int cantCols, char retBuff[8][8], int x, int y) {
+void dividirEnBloques_C(char* CBuffer, int cantCols, unsigned char retBuff[8][8], int x, int y) {
 	CBuffer = CBuffer + (x * 64) + (y * cantCols * 64);
 	int i,j;
 	for (i = 0 ; i < 8 ; i++) {
 		for (j = 0 ; j < 8 ; j++) {
-			retBuff[i][j] = (char)(*CBuffer++);
+			retBuff[i][j] = (unsigned char)(*CBuffer++);
 		}
 	}
 }
 
-void unirBloques_C(char* CBuffer, int cantCols, char Cbloque[8][8], int x, int y) {
+void unirBloques_C(unsigned char* CBuffer, int cantCols, unsigned char Cbloque[8][8], int x, int y) {
 	CBuffer = CBuffer + (x * 64) + (y * cantCols * 64);
 	int i,j;
 	for (i = 0 ; i < 8 ; i++) {
@@ -182,7 +182,7 @@ void generarDCT_C(float DCT[8][8]) {
 
 // todos los [8][8] representan un puntero
 
-void transformar_C(char bloque[8][8], float DCT[8][8], float bloque_transformado[8][8]) {
+void transformar_C(unsigned char bloque[8][8], float DCT[8][8], float bloque_transformado[8][8]) {
 	float bloqueTemp[8][8];
 
 	transponer_char(bloque);
@@ -226,7 +226,7 @@ void decuantizar_C(short bloque_cuantizado[8][8], float bloque_transformado[8][8
 	}
 }
 
-void antitransformar_C(float bloque_transformado[8][8], float DCT[8][8], char bloque[8][8]) {
+void antitransformar_C(float bloque_transformado[8][8], float DCT[8][8], unsigned char bloque[8][8]) {
 	float bloqueTemp[8][8];
 
 	transponer_float(DCT);

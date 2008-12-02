@@ -76,35 +76,45 @@ extern trasponer
 ;;;;;;;;; FLO ATTOCHAR ;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-%macro float_to_char 2		;%2 = float_to_char(%1)
-	
-; TO-DO!
+%macro fc_cargar 1
+	movups %1, [esi]
+	lea esi, [esi + ebx]
+	cvttps2dq %1, %1
+%endmacro
 
-; 		mov esi, %1
-; 		mov edi, %2
-; 
-; 		pxor mm0, mm0
-; 		mov ecx, 16
-; 
-; 	.ciclo:
-; 		movd mm1, [esi]
-; 		punpcklbw mm1, mm0
-; 
-; 		movq mm2, mm1
-; 		punpcklwd mm1, mm0
-; 		punpckhwd mm2, mm0
-; 
-; 		cvtpi2ps xmm0, mm2
-; 		movlhps xmm0, xmm0
-; 		cvtpi2ps xmm0, mm1
-; 
-; 		movdqu [edi], xmm0
-; 
-; 		times 4 inc esi
-; 		times 16 inc edi
-; 		loop .ciclo
-; 
-; 		emms
+%macro fc_step 0
+	fc_cargar xmm0
+	fc_cargar xmm1
+	fc_cargar xmm2
+	fc_cargar xmm3
+	fc_cargar xmm4
+	fc_cargar xmm5
+	fc_cargar xmm6
+	fc_cargar xmm7
+	
+	packssdw xmm0, xmm1
+	packssdw xmm2, xmm3
+	packssdw xmm4, xmm5
+	packssdw xmm6, xmm7
+	
+	packsswb xmm0, xmm2		; en xmm0 tengo 16 valores en bytes
+	movdqu [edi], xmm0
+	lea edi, [edi + ebx]
+	packsswb xmm4, xmm6		; en xmm4 tengo otros 16 valores en bytes
+	movdqu [edi], xmm4
+	lea edi, [edi + ebx]
+%endmacro
+
+%macro float_to_char 2		;%2 = float_to_char(%1)
+	mov esi, %1
+	mov edi, %2
+
+	mov ebx, 16			; para avanzar las matrices
+	
+	; en cada fc_step transfiero 32 valores floats de una matriz a otra
+	; convirtiéndolos a char al mismo tiempo...
+	fc_step
+	fc_step
 %endmacro
 
 
@@ -122,7 +132,7 @@ antitransformar:
 	push edi
 	
 	mov eax, p_bloque_in
-	push esi
+	push eax
 	call trasponer
 	add esp, 4
 	
