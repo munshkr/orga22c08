@@ -5,25 +5,27 @@
 #define false 0
 #define true 1
 
-#define TC_ROW_SIZE 8
-
-
 #include <stdio.h>
 #include <stdlib.h>
 
 #include "bmp2joc2.h"
 
-int writejoc2(JOC2fileheader* joc2fh, BMPfileheader* fh, BMPinfoheader* ih, short* codificacion, char* file_path) {
+int writejoc2(BMPfileheader* fh, BMPinfoheader* ih, short* codificacion, int codLen, char* file_path) {
 
 	int ok = 0;
 	int esValido = true;
 
+	//declaro el fileheader de JOC2
+	JOC2fileheader joc2fh;
+	joc2fh.fType = 0x32434F4A;
+	joc2fh.bSize = codLen;
+
 	FILE * f2 = fopen(file_path, "wb");
 
 	// guardo el header del oc2
-	ok = fwrite( &(joc2fh->fType), sizeof(int), 1, f2 );
+	ok = fwrite( &(joc2fh.fType), sizeof(int), 1, f2 );
 	if (!ok) esValido = false;
-	ok = fwrite( &(joc2fh->bSize), sizeof(int), 1, f2 );
+	ok = fwrite( &(joc2fh.bSize), sizeof(int), 1, f2 );
 	if (!ok) esValido = false;
 
 	// guardo el fileheader del bmp
@@ -64,17 +66,10 @@ int writejoc2(JOC2fileheader* joc2fh, BMPfileheader* fh, BMPinfoheader* ih, shor
     ok = fwrite ( &(ih->ClrImportant), sizeof(int), 1, f2 );
 	if (!ok) esValido = false;
 
-	// guardo la codificación
-	if ((joc2fh->bSize % 4) != 0) {
-		//Esto supuestamente no debería pasar nunca porque la imagen
-		//es multiplo de 8 en ambas dimensiones
-		printf("HUBO UN GRAVE PROBLEMA AL GRABAR, BYTESTREAM%4 != 0");
-	}
-
-	ok = fwrite ( codificacion, joc2fh->bSize, sizeof(short), f2 );
+	ok = fwrite ( codificacion, sizeof(short), joc2fh.bSize, f2 );
 	if (!ok) esValido = false;
 
-	//fclose(f2 ); --> Cuando cerrabamos el archivo nos tiraba error el C
+	fclose(f2); // --> Cuando cerrabamos el archivo nos tiraba error el C
 	return esValido;
 }
 

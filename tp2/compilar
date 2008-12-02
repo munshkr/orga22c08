@@ -1,7 +1,6 @@
 #! /bin/bash
-yasm -felf -gdwarf2 -o trasponer.o asm/trasponer.asm
-# yasm -felf -gdwarf2 -o multiplicar.o asm/multiplicar.asm
 
+yasm -felf -gdwarf2 -o trasponer.o asm/trasponer.asm
 yasm -felf -gdwarf2 -o gdct.o asm/gdct.asm
 yasm -felf -gdwarf2 -o dividir.o asm/dividir.asm
 yasm -felf -gdwarf2 -o transformar.o asm/transformar.asm
@@ -13,7 +12,9 @@ yasm -felf -gdwarf2 -o codificar.o asm/codificar.asm
 yasm -felf -gdwarf2 -o decodificar.o asm/decodificar.asm
 
 gcc -c -g bmp2joc2/bmp2joc2.c
+gcc -c -g joc22bmp/joc22bmp.c
 
-gcc -g -o run_bmp2joc2 -lm bmp2joc2.o trasponer.o dividir.o gdct.o unir.o transformar.o cuantizar.o decuantizar.o antitransformar.o codificar.o decodificar.o
+gcc -g -o run_bmp2joc2 bmp2joc2.o dividir.o gdct.o transformar.o cuantizar.o codificar.o
+gcc -g -o run_joc22bmp joc22bmp.o trasponer.o gdct.o unir.o decuantizar.o antitransformar.o decodificar.o
 
 rm *.o
