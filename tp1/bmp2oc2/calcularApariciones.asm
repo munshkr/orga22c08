@@ -63,6 +63,7 @@ calcularApariciones:
 	mov ecx, 256
 
 	xor eax, eax
+	xor ebx, ebx				; guarda el byte extraido del buffer
 	cld
 	rep stosd
 
@@ -71,6 +72,7 @@ calcularApariciones:
 	; coloco en registros el tamano del buffer y el ptr a este.
 	mov edi, p_arr
 	mov ecx, bsize
+	shr ecx, 2
 	mov esi, p_buffer
 
 
@@ -78,8 +80,20 @@ ciclo_apar:						; Ciclo dedicado a contar apariciones
 	cmp ecx, 0
 	je fin_ciclo_apar
 
-	lodsb						; cargo en eax, pero de a byte
-	inc dword [edi + eax * 4]	; incremento en uno lo que haya en el indice al del array (al trae el valor de RGB 0-255)
+	lodsd						; cargo en eax, pero de a byte
+	mov bl, al
+	inc dword [edi + ebx * 4]	; incremento en uno lo que haya en el indice al del array (al trae el valor de RGB 0-255)
+	shr eax, 8
+	mov bl, al
+	inc dword [edi + ebx * 4]
+	shr eax, 8
+	mov bl, al
+	inc dword [edi + ebx * 4]
+	shr eax, 8
+	mov bl, al
+	inc dword [edi + ebx * 4]
+	shr eax, 8
+
 	loop ciclo_apar
 
 
