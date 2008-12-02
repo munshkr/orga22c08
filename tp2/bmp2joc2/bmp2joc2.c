@@ -127,7 +127,11 @@ int main (int argc, char* argv[]) {
 		}
 
 		//le paso el puntero a codificacion sin adelantar
-		writejoc2(&fh, &ih, codifBckp, codLen, archivo_destino);
+		if (argc < 4) {
+			writejoc2(&fh, &ih, codifBckp, codLen, archivo_destino);
+		} else {
+			writeJOC2Deluxe(&fh, &ih, codifBckp, codLen, archivo_destino);
+		}
 
     } else {
     	printf("Hubo un error al leer el archivo .BMP\n");
