@@ -87,6 +87,11 @@ int main (int argc, char* argv[]) {
 		generarDCT(DCT_Trasp);
 		trasponer(DCT_Trasp);
 
+/*		short codificacion[16][16];
+		int cantidad = codificar(bloque_cuantizado,(short*)codificacion);
+		int	cantidad2 = decodificar((short*)codificacion, bloque_cuantizado);
+		if(cantidad != cantidad2) 
+			printf("TPario!!!!!!!!");*/
 		
 		int x, y;
 		for (y = 0 ; y < cantRows ; y++) {
@@ -94,50 +99,20 @@ int main (int argc, char* argv[]) {
 				dividirEnBloques(RBuffer, cantCols, Rbloque, x, y);
 				transformar(Rbloque, DCT, bloque_transformado, MTemp);
 				cuantizar(bloque_transformado, Q_MATRIX, bloque_cuantizado);
-				short codificacion[16][16];
-				int cantidad = codificar(bloque_cuantizado,(short*)codificacion);
-				int	cantidad2 = decodificar((short*)codificacion, bloque_cuantizado);
-				if(cantidad != cantidad2) 
-					printf("TPario!!!!!!!!");
-					
-				decuantizar_C(bloque_cuantizado, bloque_transformado);
-// 				decuantizar(bloque_cuantizado, Q_MATRIX, bloque_transformado);
-
-// 				printf("Rbloque decuantizado:\n");
-// 				for (i = 0 ; i < 8 ; i++) {
-// 					for (j = 0 ; j < 8 ; j++) {
-// 						printf("%f\t", bloque_transformado[i][j]);
-// 					}
-// 					printf("\n");
-// 				}
-// 				printf("\n");
-
-				antitransformar_C(bloque_transformado, DCT, Rbloque);
-// 				antitransformar(bloque_transformado, DCT_Trasp, Rbloque, MTemp);
-// 				printf("Rbloque antitrans:\n");
-// 				for (i = 0 ; i < 8 ; i++) {
-// 					for (j = 0 ; j < 8 ; j++) {
-// 						printf("%d\t", Rbloque[i][j]);
-// 					}
-// 					printf("\n");
-// 				}
-// 				printf("\n");
+				decuantizar(bloque_cuantizado, Q_MATRIX, bloque_transformado);
+				antitransformar(bloque_transformado, DCT_Trasp, Rbloque, MTemp);
 
 				dividirEnBloques(BBuffer, cantCols, Bbloque, x, y);
 				transformar(Bbloque, DCT, bloque_transformado, MTemp);
 				cuantizar(bloque_transformado, Q_MATRIX, bloque_cuantizado);
-				decuantizar_C(bloque_cuantizado, bloque_transformado);
-				antitransformar_C(bloque_transformado, DCT, Bbloque);
-// 				decuantizar(bloque_cuantizado, Q_MATRIX, bloque_transformado);
-// 				antitransformar(bloque_transformado, DCT_Trasp, Bbloque, MTemp);
+				decuantizar(bloque_cuantizado, Q_MATRIX, bloque_transformado);
+				antitransformar(bloque_transformado, DCT_Trasp, Bbloque, MTemp);
 
 				dividirEnBloques(GBuffer, cantCols, Gbloque, x, y);
 				transformar(Gbloque, DCT, bloque_transformado, MTemp);
 				cuantizar(bloque_transformado, Q_MATRIX, bloque_cuantizado);
-				decuantizar_C(bloque_cuantizado, bloque_transformado);
-				antitransformar_C(bloque_transformado, DCT, Gbloque);
-// 				decuantizar(bloque_cuantizado, Q_MATRIX, bloque_transformado);
-// 				antitransformar(bloque_transformado, DCT_Trasp, Gbloque, MTemp);
+				decuantizar(bloque_cuantizado, Q_MATRIX, bloque_transformado);
+				antitransformar(bloque_transformado, DCT_Trasp, Gbloque, MTemp);
 
 				unirBloques(RBuffer, cantCols, Rbloque, x, y);
 				unirBloques(GBuffer, cantCols, Gbloque, x, y);

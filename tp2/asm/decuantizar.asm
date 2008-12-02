@@ -30,10 +30,13 @@ global decuantizar
 
 
 %macro shorts_a_floats 2
+	pxor xmm7, xmm7
+	
 	movdqu %1, [esi]
 	lea esi, [esi + ebx]
 	
 	movdqu %2, %1
+	pcmpgtw xmm7, %1
 	punpcklwd %1, xmm7
 	punpckhwd %2, xmm7
 	cvtdq2ps %1, %1
@@ -53,7 +56,6 @@ global decuantizar
 
 %macro decuant 0
 	; xmm7 se usa para desempaquetar y convertir shorts a longs
-	pxor xmm7, xmm7
 	
 	shorts_a_floats xmm0, xmm1
 	shorts_a_floats xmm2, xmm3
