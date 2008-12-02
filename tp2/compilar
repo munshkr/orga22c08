@@ -1,15 +1,15 @@
 #! /bin/bash
 
-yasm -felf -gdwarf2 -o trasponer.o asm/trasponer.asm
-yasm -felf -gdwarf2 -o gdct.o asm/gdct.asm
-yasm -felf -gdwarf2 -o dividir.o asm/dividir.asm
-yasm -felf -gdwarf2 -o transformar.o asm/transformar.asm
-yasm -felf -gdwarf2 -o cuantizar.o asm/cuantizar.asm
-yasm -felf -gdwarf2 -o decuantizar.o asm/decuantizar.asm
-yasm -felf -gdwarf2 -o antitransformar.o asm/antitransformar.asm
-yasm -felf -gdwarf2 -o unir.o asm/unir.asm
-yasm -felf -gdwarf2 -o codificar.o asm/codificar.asm
-yasm -felf -gdwarf2 -o decodificar.o asm/decodificar.asm
+nasm -felf -gdwarf2 -o trasponer.o asm/trasponer.asm
+nasm -felf -gdwarf2 -o gdct.o asm/gdct.asm
+nasm -felf -gdwarf2 -o dividir.o asm/dividir.asm
+nasm -felf -gdwarf2 -o transformar.o asm/transformar.asm
+nasm -felf -gdwarf2 -o cuantizar.o asm/cuantizar.asm
+nasm -felf -gdwarf2 -o decuantizar.o asm/decuantizar.asm
+nasm -felf -gdwarf2 -o antitransformar.o asm/antitransformar.asm
+nasm -felf -gdwarf2 -o unir.o asm/unir.asm
+nasm -felf -gdwarf2 -o codificar.o asm/codificar.asm
+nasm -felf -gdwarf2 -o decodificar.o asm/decodificar.asm
 
 gcc -c -g bmp2joc2/bmp2joc2.c
 gcc -c -g joc22bmp/joc22bmp.c

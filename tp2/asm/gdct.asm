@@ -78,10 +78,10 @@ ciclo_j:
 	fadd st0, st0						;[2, j, i, sqrt(2/8), sqrt(1/8), 16]
 	fmul st0, st1						;[2j, j, i, sqrt(2/8), sqrt(1/8), 16]
 	fld1								;[1, 2j, j, i, sqrt(2/8), sqrt(1/8), 16]
-	faddp								;[2j+1, j, i, sqrt(2/8), sqrt(1/8), 16]
+	faddp st1, st0						;[2j+1, j, i, sqrt(2/8), sqrt(1/8), 16]
 	fldpi								;[pi, 2*j+1, j, i, sqrt(2/8), sqrt(1/8), 16]
 	fmul st0, st3						;[pi*i, 2*j+1, j, i, sqrt(2/8), sqrt(1/8), 16]
-	fmulp								;[(pi*i)*(2*j+1), j, i, sqrt(2/8), sqrt(1/8), 16]
+	fmulp st1, st0						;[(pi*i)*(2*j+1), j, i, sqrt(2/8), sqrt(1/8), 16]
 	fdiv st0, st5						;[(pi*i)*(2*j+1)/16, j, i, sqrt(2/8), sqrt(1/8), 16]
 	fcos								;[cos((pi*i)*(2*j+1)/16), j, i, sqrt(2/8), sqrt(1/8), 16]
 
@@ -98,7 +98,7 @@ almacenar:
 	add edi, 4
 
 	fld1								;[1, j, i, sqrt(2/8), sqrt(1/8), 16]
-	faddp								;[j+1, i, sqrt(2/8), sqrt(1/8), 16]
+	faddp st1, st0						;[j+1, i, sqrt(2/8), sqrt(1/8), 16]
 	inc ebx
 
 	cmp ebx, 8
@@ -106,7 +106,7 @@ almacenar:
 
 	fcomp st0, st1						;[i, sqrt(2/8), sqrt(1/8), 16]
 	fld1								;[1, i, sqrt(2/8), sqrt(1/8), 16]
-	faddp								;[i+1, sqrt(2/8), sqrt(1/8), 16]
+	faddp st1, st0						;[i+1, sqrt(2/8), sqrt(1/8), 16]
 	fldz								;[0, i+1, sqrt(2/8), sqrt(1/8), 16]
 
 	xor ebx, ebx
