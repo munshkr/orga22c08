@@ -88,17 +88,17 @@ int main (int argc, char* argv[]) {
 
 
 		//Pido un buffer de codificación del doble de la imagen
-		unsigned short* codificacion = (short*)malloc(ih.SizeImage * 2);
+		short* codificacion = (short*)malloc(ih.SizeImage * 2);
 		if(codificacion == NULL){
 			printf("Hubo un problema al intentar alocar memoria para codificar\n");
 			return EXIT_SUCCESS;
 		}
 		//este es un backup para guardar al joc2
-		unsigned short* codifBckp = codificacion;
+		short* codifBckp = codificacion;
 
 		//este es un backup de la direccion del buffer para hacer las pruebas de decodificacion
 		//en este mismo archivo
-		unsigned short* codificacion2 = codificacion;
+		short* codificacion2 = codificacion;
 
 		int x, y, codLen=0, longTemp;
 		for (y = 0 ; y < cantRows ; y++) {
@@ -106,17 +106,39 @@ int main (int argc, char* argv[]) {
 				dividirEnBloques(RBuffer, cantCols, Rbloque, x, y);
 				transformar(Rbloque, DCT, bloque_transformado, MTemp);
 				cuantizar(bloque_transformado, Q_MATRIX, bloque_cuantizado);
-		    	for (i = 0 ; i < 8 ; i++) {
-					for (j = 0 ; j < 8 ; j++) {
-						printf("%d\t", bloque_cuantizado[i][j]);
-					}
-					printf("\n");
-				}
-				printf("\n");
 				longTemp = codificar(bloque_cuantizado, codificacion);
 				codificacion += longTemp;
 				codLen += longTemp;
+			}
+		}
 
+		for (y = 0 ; y < cantRows ; y++) {
+			for (x = 0 ; x < cantCols ; x++) {
+				dividirEnBloques(GBuffer, cantCols, Gbloque, x, y);
+				transformar(Gbloque, DCT, bloque_transformado, MTemp);
+				cuantizar(bloque_transformado, Q_MATRIX, bloque_cuantizado);
+				longTemp= codificar(bloque_cuantizado, codificacion);
+				codificacion += longTemp;
+				codLen += longTemp;
+			}
+		}
+
+		for (y = 0 ; y < cantRows ; y++) {
+			for (x = 0 ; x < cantCols ; x++) {
+				dividirEnBloques(BBuffer, cantCols, Bbloque, x, y);
+				transformar(Bbloque, DCT, bloque_transformado, MTemp);
+				cuantizar(bloque_transformado, Q_MATRIX, bloque_cuantizado);
+				longTemp= codificar(bloque_cuantizado, codificacion);
+				codificacion += longTemp;
+				codLen += longTemp;
+			}
+		}
+
+
+
+		//ACA COMIENZA DECODIFICAR! ############################################
+		for (y = 0 ; y < cantRows ; y++) {
+			for (x = 0 ; x < cantCols ; x++) {
 				codificacion2 += decodificar( codificacion2, bloque_cuantizado);
 				decuantizar(bloque_cuantizado, Q_MATRIX, bloque_transformado);
 				antitransformar(bloque_transformado, DCT_Trasp, Rbloque, MTemp);
@@ -126,16 +148,7 @@ int main (int argc, char* argv[]) {
 
 		for (y = 0 ; y < cantRows ; y++) {
 			for (x = 0 ; x < cantCols ; x++) {
-				dividirEnBloques(GBuffer, cantCols, Gbloque, x, y);
-				transformar(Gbloque, DCT, bloque_transformado, MTemp);
-				cuantizar(bloque_transformado, Q_MATRIX, bloque_cuantizado);
-				/*
-				longTemp= codificar(bloque_cuantizado, codificacion);
-				codificacion += longTemp;
-				codLen += longTemp;
-
 				codificacion2 += decodificar(codificacion2, bloque_cuantizado);
-				*/
 				decuantizar(bloque_cuantizado, Q_MATRIX, bloque_transformado);
 				antitransformar(bloque_transformado, DCT_Trasp, Gbloque, MTemp);
 				unirBloques(GBuffer, cantCols, Gbloque, x, y);
@@ -144,16 +157,7 @@ int main (int argc, char* argv[]) {
 
 		for (y = 0 ; y < cantRows ; y++) {
 			for (x = 0 ; x < cantCols ; x++) {
-				dividirEnBloques(BBuffer, cantCols, Bbloque, x, y);
-				transformar(Bbloque, DCT, bloque_transformado, MTemp);
-				cuantizar(bloque_transformado, Q_MATRIX, bloque_cuantizado);
-				/*
-				longTemp= codificar(bloque_cuantizado, codificacion);
-				codificacion += longTemp;
-				codLen += longTemp;
-
 				codificacion2 += decodificar(codificacion2, bloque_cuantizado);
-				*/
 				decuantizar(bloque_cuantizado, Q_MATRIX, bloque_transformado);
 				antitransformar(bloque_transformado, DCT_Trasp, Bbloque, MTemp);
 				unirBloques(BBuffer, cantCols, Bbloque, x, y);
@@ -165,10 +169,10 @@ int main (int argc, char* argv[]) {
 		joc2fh.fType = 0x32434F4A;
 		joc2fh.bSize = codLen;
 
-		writejbmp(archivo_destino, &fh, &ih, RBuffer, GBuffer, BBuffer);
-
 		//le paso el puntero a codificacion sin adelantar
-		//writejoc2(&joc2fh, &fh, &ih, codifBckp, archivo_destino);
+		writejoc2(&joc2fh, &fh, &ih, codifBckp, archivo_destino);
+
+		writejbmp(archivo_destino, &fh, &ih, RBuffer, GBuffer, BBuffer);
     }
 
 	if (RBuffer != NULL)

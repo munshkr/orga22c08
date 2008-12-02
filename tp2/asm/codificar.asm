@@ -24,7 +24,7 @@ section .text
 	mov ebx, dword %1
 	add ebx, esi	;en esi tengo el puntero al bloque
 	mov bx, [ebx]	;son de shorts!
-	and ebx, 0x00FF
+	and ebx, 0x0000FFFF
 	cmp bx, 0
 	je falta_%1
 	mov [edi],  cx	; guardo la cantidad de ceros

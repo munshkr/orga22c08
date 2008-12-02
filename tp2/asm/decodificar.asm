@@ -50,7 +50,7 @@ decodificar:
 	xor edx, edx		; contador de cuantos movi el stream
 	xor ecx, ecx		; contador de ceros
 
-	mov ebx, [esi]		; cargo en ebx el primer valor del stream
+	mov bx, [esi]		; cargo en ebx el primer valor del stream
 	mov [edi], bx		; lo guardo en la matriz porque va de una
 	times 2 inc esi		; muevo ptr del stream al primer cantidad de ceros
 	mov cx, [esi]		; cargo la primer cantidad de ceros
