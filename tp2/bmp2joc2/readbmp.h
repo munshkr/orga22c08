@@ -123,7 +123,7 @@ int readbmp(const char* path, BMPfileheader* fh, BMPinfoheader* ih, unsigned cha
         	int j, k;
         	unsigned char* TBuffer = malloc(fileRowSize);
 
-        	int indiceLoco;
+        	int indiceMatricial;
 
         	// cantidad de columnas y filas de matrices 8x8
         	int cantColumnasM = ih->Width / 8;
@@ -139,16 +139,16 @@ int readbmp(const char* path, BMPfileheader* fh, BMPinfoheader* ih, unsigned cha
 					for (k = 0 ; k < validRowSize ; k += 3) {
 						/*
 							Armamos los buffers no como bits directos del BMP sino como Array de Matrices 8x8
-							Por eso el indiceLoco.
+							Por eso el indiceMatricial.
 							Dolió.
 						*/
 
- 						//indiceLoco = ( ((k/3) / 8) + (j/8 * (ih->Width / 8)) ) * 64  +  ((k/3) % 8)  +  ((j%8) * 8);
-						indiceLoco = ((bytesMetidos / 8) * 64) + ((j % 8)*8) + (bytesMetidos % 8) + (((j / 8) * 64) * ih->Width / 8);
-						//printf("%d \n", indiceLoco);
-						(*BBuffer)[indiceLoco] = TBuffer[k];
-						(*GBuffer)[indiceLoco] = TBuffer[k+1];
-						(*RBuffer)[indiceLoco] = TBuffer[k+2];
+ 						//indiceMatricial = ( ((k/3) / 8) + (j/8 * (ih->Width / 8)) ) * 64  +  ((k/3) % 8)  +  ((j%8) * 8);
+						indiceMatricial = ((bytesMetidos / 8) * 64) + ((j % 8)*8) + (bytesMetidos % 8) + (((j / 8) * 64) * ih->Width / 8);
+						//printf("%d \n", indiceMatricial);
+						(*BBuffer)[indiceMatricial] = TBuffer[k];
+						(*GBuffer)[indiceMatricial] = TBuffer[k+1];
+						(*RBuffer)[indiceMatricial] = TBuffer[k+2];
 						bytesMetidos++;
 					}
 				}

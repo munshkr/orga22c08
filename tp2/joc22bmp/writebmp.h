@@ -67,7 +67,7 @@ int writebmp(char* file_path, BMPfileheader* fh, BMPinfoheader* ih, char* RBuffe
 	int validRowSize = ih->Width * 3;
 	int channelRowSize = ih->Width;
 	int bytesMetidos = 0;
-	int j, k, indiceLoco;
+	int j, k, indiceMatricial;
 
 	if (TBuffer == NULL) {
 		ok = false;
@@ -83,13 +83,13 @@ int writebmp(char* file_path, BMPfileheader* fh, BMPinfoheader* ih, char* RBuffe
 		for (j = 0 ; j < ih->Height ; j++) {
 			bytesMetidos = 0;
 			for (k = 0 ; k < validRowSize ; k+=3) {
-				indiceLoco = ((bytesMetidos / 8) * 64) + ((j % 8)*8) + (bytesMetidos % 8) + (((j / 8) * 64) * ih->Width / 8);
-				if (indiceLoco > (fh->Size - 54) / 3) {
+				indiceMatricial = ((bytesMetidos / 8) * 64) + ((j % 8)*8) + (bytesMetidos % 8) + (((j / 8) * 64) * ih->Width / 8);
+				if (indiceMatricial > (fh->Size - 54) / 3) {
 					printf("·");
 				} else {
-					TBuffer[j * fileRowSize + k] = BBuffer[indiceLoco];
-					TBuffer[j * fileRowSize + k + 1] = GBuffer[indiceLoco];
-					TBuffer[j * fileRowSize + k + 2] = RBuffer[indiceLoco];
+					TBuffer[j * fileRowSize + k] = BBuffer[indiceMatricial];
+					TBuffer[j * fileRowSize + k + 1] = GBuffer[indiceMatricial];
+					TBuffer[j * fileRowSize + k + 2] = RBuffer[indiceMatricial];
 					bytesMetidos++;
 				}
 			}
