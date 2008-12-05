@@ -1,0 +1,41 @@
+#! /bin/bash
+
+if [ $# -eq 0 ]  # El script tiene que tener al menos un parametro.
+then
+  echo "Modo de uso:
+		$0 <Imagen.bmp>
+		Devuelve: Imagen.jocd"
+  exit
+fi
+
+compresor="compresion/run_bmp2oc2"
+compiladorCompresor="compresion/compilar"
+if [ ! -f $compresor ]  # El script tiene que tener al menos un parametro.
+then
+	if [ ! -f $compiladorCompresor ]  # El script tiene que tener al menos un parametro.
+	then
+		echo "Fatal Error: faltan archivos para generar el compresor"
+		exit
+	else
+		cd compresion
+		./compilar
+		cd ../
+	fi
+fi 
+
+if [ ! -f $1 ]  # El archivo por parametro no existe.
+then
+	echo "Archivo inexistente"
+	exit
+fi
+
+inFile=${1%.*}
+tempOutFile=temp_${inFile##*/}.joc2
+./run_bmp2joc2 $1 $tempOutFile deluxe > /dev/null
+./compresion/run_bmp2oc2 $tempOutFile ${inFile##*/}.jocd > /dev/null
+if [ -f $tempOutFile ]
+then
+	rm $tempOutFile
+else
+	echo "Ocurrió un error durante la compresión"
+fi
